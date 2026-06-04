@@ -1,0 +1,268 @@
+.vdash-page {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.vdash-header {
+  margin-bottom: 2rem;
+}
+
+.vdash-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--clr-text-900);
+}
+
+.vdash-subtitle {
+  color: var(--clr-text-500);
+  margin-top: 0.25rem;
+}
+
+.vdash-no-store {
+  background-color: var(--clr-amber-light);
+  border: 1px solid #fcd34d;
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.vdash-no-store__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.vdash-no-store__icon {
+  color: var(--clr-amber);
+  font-size: 1.5rem;
+}
+
+.vdash-no-store__heading {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #92400e;
+}
+
+.vdash-no-store__text {
+  color: #b45309;
+  margin-bottom: 1rem;
+}
+
+.vdash-no-store__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--clr-amber);
+  color: #fff;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+
+.vdash-no-store__btn:hover {
+  background-color: #d97706;
+}
+
+.vdash-store-banner {
+  background-color: var(--clr-primary-light);
+  border: 1px solid #c7d2fe;
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.vdash-store-banner__left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.vdash-store-logo {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #a5b4fc;
+}
+
+.vdash-store-logo--placeholder {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background-color: #c7d2fe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4338ca;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.vdash-store-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.vdash-store-name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--clr-text-900);
+}
+
+.vdash-store-category {
+  font-size: 0.875rem;
+  color: var(--clr-primary);
+  font-weight: 500;
+}
+
+.vdash-store-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.vdash-store-badge {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+.vdash-store-badge--active {
+  background-color: var(--clr-green-light);
+  color: #065f46;
+}
+
+.vdash-store-badge--inactive {
+  background-color: var(--clr-red-light);
+  color: #b91c1c;
+}
+
+.vdash-store-manage-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #fff;
+  border: 1px solid #a5b4fc;
+  color: #4338ca;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+
+.vdash-store-manage-btn:hover {
+  background-color: var(--clr-primary-light);
+}
+
+.vdash-stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 640px) {
+  .vdash-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.vdash-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .vdash-actions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.vdash-action-card {
+  background-color: #fff;
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  text-decoration: none;
+  display: block;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.vdash-action-card:hover {
+  border-color: #a5b4fc;
+  box-shadow: var(--shadow-sm);
+}
+
+.vdash-action-card--primary {
+  background-color: var(--clr-primary);
+  border-color: var(--clr-primary);
+}
+
+.vdash-action-card--primary:hover {
+  background-color: var(--clr-primary-hover);
+  border-color: var(--clr-primary-hover);
+}
+
+.vdash-action-card__inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.vdash-action-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: var(--clr-primary-light);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s;
+}
+
+.vdash-action-card:hover .vdash-action-icon {
+  background-color: #c7d2fe;
+}
+
+.vdash-action-icon--primary {
+  background-color: #6366f1;
+}
+
+.vdash-action-icon--primary svg {
+  color: #fff;
+}
+
+.vdash-action-icon svg {
+  color: var(--clr-primary);
+  font-size: 1.25rem;
+}
+
+.vdash-action-title {
+  font-weight: 600;
+  color: var(--clr-text-900);
+}
+
+.vdash-action-card--primary .vdash-action-title {
+  color: #fff;
+}
+
+.vdash-action-desc {
+  font-size: 0.875rem;
+  color: var(--clr-text-500);
+}
+
+.vdash-action-card--primary .vdash-action-desc {
+  color: #c7d2fe;
+}

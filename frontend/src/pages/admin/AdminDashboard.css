@@ -1,0 +1,96 @@
+.admin-dash-page {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.admin-dash-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.admin-dash-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--clr-text-900);
+}
+
+.admin-dash-subtitle {
+  color: var(--clr-text-500);
+  margin-top: 0.25rem;
+}
+
+.admin-dash-analytics-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--clr-primary);
+  color: #fff;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+
+.admin-dash-analytics-link:hover {
+  background-color: var(--clr-primary-hover);
+}
+
+.admin-dash-kpi-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+
+@media (min-width: 640px) {
+  .admin-dash-kpi-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.admin-dash-stores-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-dash-stores-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--clr-text-900);
+}
+
+.admin-dash-stores-card {
+  background-color: #fff;
+  border-radius: 1rem;
+  border: 1px solid var(--clr-border);
+  overflow: hidden;
+}
+
+.admin-dash-empty {
+  text-align: center;
+  color: var(--clr-text-400);
+  padding: 2.5rem;
+}
+
+.admin-dash-store-status-badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+.admin-dash-store-status-badge--active {
+  background-color: var(--clr-green-light);
+  color: #065f46;
+}
+
+.admin-dash-store-status-badge--inactive {
+  background-color: var(--clr-red-light);
+  color: #b91c1c;
+}

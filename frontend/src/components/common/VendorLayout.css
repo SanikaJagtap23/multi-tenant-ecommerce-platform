@@ -1,0 +1,12 @@
+/* VendorLayout.css */
+
+.vendor-layout {
+  display: flex;
+  min-height: calc(100vh - 64px);
+}
+
+.vendor-layout__main {
+  flex: 1;
+  background: var(--clr-bg-subtle);
+  overflow: auto;
+}

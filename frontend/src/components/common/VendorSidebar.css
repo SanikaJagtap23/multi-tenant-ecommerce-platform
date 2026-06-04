@@ -1,0 +1,53 @@
+/* VendorSidebar.css */
+
+.vendor-sidebar {
+  width: 13rem;
+  flex-shrink: 0;
+  border-right: 1px solid var(--clr-border);
+  background: #fff;
+  min-height: 100vh;
+  padding: 1.5rem 0.75rem;
+}
+
+.vendor-sidebar__heading {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--clr-text-400);
+  text-transform: uppercase;
+  padding: 0 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.vendor-sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.vendor-sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--clr-text-600);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.vendor-sidebar__link:hover {
+  background: var(--clr-border-light);
+  color: var(--clr-text-900);
+}
+
+.vendor-sidebar__link--active {
+  background: var(--clr-primary-light);
+  color: #4338ca;
+}
+
+.vendor-sidebar__link--active:hover {
+  background: var(--clr-primary-light);
+  color: #4338ca;
+}

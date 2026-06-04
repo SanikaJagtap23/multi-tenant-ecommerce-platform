@@ -1,0 +1,445 @@
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { updateProfile, updatePassword, logout } from "../features/auth/authSlice";
+import { fetchMyOrders } from "../features/order/orderSlice";
+import Spinner from "../components/common/Spinner";
+import toast from "react-hot-toast";
+import {
+  FiUser, FiMail, FiPhone, FiLock, FiShoppingBag, FiHeart,
+  FiLogOut, FiEdit2, FiCheck, FiAlertCircle, FiCalendar,
+  FiGrid, FiPackage,
+} from "react-icons/fi";
+import "./ProfilePage.css";
+
+const SECTIONS = {
+  INFO:     "info",
+  PASSWORD: "password",
+  ORDERS:   "orders",
+};
+
+export default function ProfilePage() {
+  const dispatch   = useDispatch();
+  const navigate   = useNavigate();
+  const { userInfo, loading } = useSelector((s) => s.auth);
+  const { myOrders } = useSelector((s) => s.order);
+
+  const [activeSection, setActiveSection] = useState(SECTIONS.INFO);
+  const [editingInfo, setEditingInfo] = useState(false);
+
+  const [infoForm, setInfoForm] = useState({ name: "", phone: "" });
+  const [passForm, setPassForm] = useState({ currentPassword: "", newPassword: "", confirmPassword: "" });
+  const [passSuccess, setPassSuccess] = useState("");
+  const [passError, setPassError]   = useState("");
+
+  const isVendor   = userInfo?.role === "vendor";
+  const isAdmin    = userInfo?.role === "superadmin";
+  const isCustomer = userInfo?.role === "customer";
+  const avatarRole = isVendor ? "vendor" : isAdmin ? "admin" : "customer";
+
+  const roleLabel = isAdmin ? "Admin" : isVendor ? "Vendor" : "Customer";
+
+  useEffect(() => {
+    if (!userInfo) { navigate("/login"); return; }
+    setInfoForm({ name: userInfo.name || "", phone: userInfo.phone || "" });
+    if (isCustomer) dispatch(fetchMyOrders());
+  }, [userInfo]);
+
+  const handleInfoSave = async (e) => {
+    e.preventDefault();
+    if (!infoForm.name.trim()) { toast.error("Name cannot be empty"); return; }
+    const result = await dispatch(updateProfile(infoForm));
+    if (updateProfile.fulfilled.match(result)) {
+      toast.success("Profile updated!");
+      setEditingInfo(false);
+    } else {
+      toast.error(result.payload || "Update failed");
+    }
+  };
+
+  const handlePasswordSave = async (e) => {
+    e.preventDefault();
+    setPassError("");
+    setPassSuccess("");
+    if (passForm.newPassword !== passForm.confirmPassword) {
+      setPassError("New passwords do not match.");
+      return;
+    }
+    const result = await dispatch(updatePassword({
+      currentPassword: passForm.currentPassword,
+      newPassword: passForm.newPassword,
+    }));
+    if (updatePassword.fulfilled.match(result)) {
+      setPassSuccess("Password changed successfully!");
+      setPassForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    } else {
+      setPassError(result.payload || "Failed to change password");
+    }
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
+    toast.success("Logged out.");
+  };
+
+  if (!userInfo) return null;
+
+  const joinedDate = userInfo.createdAt
+    ? new Date(userInfo.createdAt).toLocaleDateString("en-IN", { month: "long", year: "numeric" })
+    : null;
+
+  const orderStats = {
+    total:     myOrders.length,
+    active:    myOrders.filter((o) => ["pending","confirmed","shipped"].includes(o.status)).length,
+    delivered: myOrders.filter((o) => o.status === "delivered").length,
+  };
+
+  return (
+    <div className="profile-page">
+      <div className="profile-container">
+
+        {/* ── Sidebar ── */}
+        <aside className="profile-sidebar">
+          <div className="profile-sidebar__card">
+            {/* Identity block */}
+            <div className="profile-sidebar__identity">
+              <div className={`profile-sidebar__avatar navbar-avatar--${avatarRole}`}>
+                {userInfo.name.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <p className="profile-sidebar__name">{userInfo.name}</p>
+                <p className="profile-sidebar__email">{userInfo.email}</p>
+                <span className="profile-sidebar__role-badge">{roleLabel}</span>
+              </div>
+            </div>
+
+            {/* Navigation */}
+            <nav className="profile-sidebar__nav">
+              <p className="profile-sidebar__nav-section">Account</p>
+
+              <button
+                className={`profile-sidebar__nav-btn ${activeSection === SECTIONS.INFO ? "profile-sidebar__nav-btn--active" : ""}`}
+                onClick={() => setActiveSection(SECTIONS.INFO)}
+              >
+                <FiUser size={15} /> Personal Information
+              </button>
+
+              <button
+                className={`profile-sidebar__nav-btn ${activeSection === SECTIONS.PASSWORD ? "profile-sidebar__nav-btn--active" : ""}`}
+                onClick={() => setActiveSection(SECTIONS.PASSWORD)}
+              >
+                <FiLock size={15} /> Change Password
+              </button>
+
+              {isCustomer && (
+                <>
+                  <p className="profile-sidebar__nav-section">Shopping</p>
+                  <button
+                    className={`profile-sidebar__nav-btn ${activeSection === SECTIONS.ORDERS ? "profile-sidebar__nav-btn--active" : ""}`}
+                    onClick={() => setActiveSection(SECTIONS.ORDERS)}
+                  >
+                    <FiPackage size={15} /> My Orders
+                  </button>
+                  <Link to="/wishlist" className="profile-sidebar__nav-btn">
+                    <FiHeart size={15} /> My Wishlist
+                  </Link>
+                </>
+              )}
+
+              {isVendor && (
+                <>
+                  <p className="profile-sidebar__nav-section">Seller</p>
+                  <Link to="/vendor/dashboard" className="profile-sidebar__nav-btn">
+                    <FiGrid size={15} /> Vendor Dashboard
+                  </Link>
+                  <Link to="/vendor/store" className="profile-sidebar__nav-btn">
+                    <FiShoppingBag size={15} /> My Store
+                  </Link>
+                </>
+              )}
+
+              {isAdmin && (
+                <>
+                  <p className="profile-sidebar__nav-section">Admin</p>
+                  <Link to="/admin/dashboard" className="profile-sidebar__nav-btn">
+                    <FiGrid size={15} /> Admin Dashboard
+                  </Link>
+                </>
+              )}
+
+              <p className="profile-sidebar__nav-section">Session</p>
+              <button
+                className="profile-sidebar__nav-btn profile-sidebar__nav-btn--danger"
+                onClick={handleLogout}
+              >
+                <FiLogOut size={15} /> Sign Out
+              </button>
+            </nav>
+          </div>
+        </aside>
+
+        {/* ── Main content ── */}
+        <main className="profile-main">
+
+          {/* ── PERSONAL INFO ── */}
+          {activeSection === SECTIONS.INFO && (
+            <>
+              {/* Stats row — customers only */}
+              {isCustomer && (
+                <div className="profile-section">
+                  <div className="profile-stats-row">
+                    <div className="profile-stat">
+                      <p className="profile-stat__value">{orderStats.total}</p>
+                      <p className="profile-stat__label">Total Orders</p>
+                    </div>
+                    <div className="profile-stat">
+                      <p className="profile-stat__value">{orderStats.active}</p>
+                      <p className="profile-stat__label">Active</p>
+                    </div>
+                    <div className="profile-stat">
+                      <p className="profile-stat__value">{orderStats.delivered}</p>
+                      <p className="profile-stat__label">Delivered</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Personal info card */}
+              <div className="profile-section">
+                <div className="profile-section__header">
+                  <h2 className="profile-section__title">
+                    <FiUser className="profile-section__title-icon" size={16} />
+                    Personal Information
+                  </h2>
+                  {!editingInfo && (
+                    <button className="profile-section__edit-btn" onClick={() => setEditingInfo(true)}>
+                      <FiEdit2 size={13} /> Edit
+                    </button>
+                  )}
+                </div>
+
+                <div className="profile-section__body">
+                  {editingInfo ? (
+                    <form className="profile-form" onSubmit={handleInfoSave}>
+                      <div className="profile-form-grid">
+                        <div>
+                          <label className="form-label">Full Name</label>
+                          <input
+                            className="form-input"
+                            value={infoForm.name}
+                            onChange={(e) => setInfoForm({ ...infoForm, name: e.target.value })}
+                            required
+                            placeholder="Your full name"
+                          />
+                        </div>
+                        <div>
+                          <label className="form-label">Phone Number</label>
+                          <input
+                            className="form-input"
+                            value={infoForm.phone}
+                            onChange={(e) => setInfoForm({ ...infoForm, phone: e.target.value })}
+                            placeholder="+91 98765 43210"
+                            type="tel"
+                          />
+                        </div>
+                      </div>
+                      <div className="profile-form__actions">
+                        <button type="submit" className="profile-form__save-btn" disabled={loading}>
+                          {loading ? <Spinner size="sm" /> : <FiCheck size={14} />}
+                          Save Changes
+                        </button>
+                        <button type="button" className="profile-form__cancel-btn" onClick={() => {
+                          setEditingInfo(false);
+                          setInfoForm({ name: userInfo.name || "", phone: userInfo.phone || "" });
+                        }}>
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <div className="profile-info-grid">
+                      <div>
+                        <p className="profile-info-item__label">
+                          <FiUser size={11} style={{ display:"inline", marginRight: 4 }} />
+                          Full Name
+                        </p>
+                        <p className="profile-info-item__value">{userInfo.name}</p>
+                      </div>
+                      <div>
+                        <p className="profile-info-item__label">
+                          <FiMail size={11} style={{ display:"inline", marginRight: 4 }} />
+                          Email Address
+                        </p>
+                        <p className="profile-info-item__value">{userInfo.email}</p>
+                      </div>
+                      <div>
+                        <p className="profile-info-item__label">
+                          <FiPhone size={11} style={{ display:"inline", marginRight: 4 }} />
+                          Phone Number
+                        </p>
+                        <p className={`profile-info-item__value${!userInfo.phone ? " profile-info-item__value--muted" : ""}`}>
+                          {userInfo.phone || "Not added yet"}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="profile-info-item__label">Account Type</p>
+                        <p className="profile-info-item__value">{roleLabel}</p>
+                      </div>
+                      {joinedDate && (
+                        <div>
+                          <p className="profile-info-item__label">
+                            <FiCalendar size={11} style={{ display:"inline", marginRight: 4 }} />
+                            Member Since
+                          </p>
+                          <p className="profile-info-item__value">{joinedDate}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* ── CHANGE PASSWORD ── */}
+          {activeSection === SECTIONS.PASSWORD && (
+            <div className="profile-section">
+              <div className="profile-section__header">
+                <h2 className="profile-section__title">
+                  <FiLock className="profile-section__title-icon" size={16} />
+                  Change Password
+                </h2>
+              </div>
+              <div className="profile-section__body">
+                {passSuccess && (
+                  <div className="profile-password-success">
+                    <FiCheck size={16} /> {passSuccess}
+                  </div>
+                )}
+                {passError && (
+                  <div className="profile-password-error">
+                    <FiAlertCircle size={16} /> {passError}
+                  </div>
+                )}
+                <form className="profile-password-form" onSubmit={handlePasswordSave} style={{ marginTop: passSuccess || passError ? "1rem" : 0 }}>
+                  <div>
+                    <label className="form-label">Current Password</label>
+                    <input
+                      className="form-input"
+                      type="password"
+                      value={passForm.currentPassword}
+                      onChange={(e) => setPassForm({ ...passForm, currentPassword: e.target.value })}
+                      required
+                      placeholder="Enter current password"
+                    />
+                  </div>
+                  <div>
+                    <label className="form-label">New Password</label>
+                    <input
+                      className="form-input"
+                      type="password"
+                      value={passForm.newPassword}
+                      onChange={(e) => setPassForm({ ...passForm, newPassword: e.target.value })}
+                      required
+                      minLength={6}
+                      placeholder="Min. 6 characters"
+                    />
+                  </div>
+                  <div>
+                    <label className="form-label">Confirm New Password</label>
+                    <input
+                      className="form-input"
+                      type="password"
+                      value={passForm.confirmPassword}
+                      onChange={(e) => setPassForm({ ...passForm, confirmPassword: e.target.value })}
+                      required
+                      placeholder="Repeat new password"
+                    />
+                  </div>
+                  <div className="profile-form__actions">
+                    <button type="submit" className="profile-form__save-btn" disabled={loading}>
+                      {loading ? <Spinner size="sm" /> : <FiLock size={14} />}
+                      Update Password
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* ── MY ORDERS (customer only) ── */}
+          {activeSection === SECTIONS.ORDERS && isCustomer && (
+            <div className="profile-section">
+              <div className="profile-section__header">
+                <h2 className="profile-section__title">
+                  <FiPackage className="profile-section__title-icon" size={16} />
+                  My Orders
+                </h2>
+                <Link to="/my-orders" className="profile-section__edit-btn">
+                  View All
+                </Link>
+              </div>
+              <div className="profile-section__body">
+                {myOrders.length === 0 ? (
+                  <div style={{ textAlign:"center", padding:"3rem 1rem", color:"var(--clr-text-400)" }}>
+                    <FiShoppingBag size={40} style={{ marginBottom:"0.75rem" }} />
+                    <p>No orders yet.</p>
+                    <Link to="/" className="profile-form__save-btn" style={{ display:"inline-flex", marginTop:"1rem", textDecoration:"none" }}>
+                      Start Shopping
+                    </Link>
+                  </div>
+                ) : (
+                  <div style={{ display:"flex", flexDirection:"column", gap:"0.75rem" }}>
+                    {myOrders.slice(0, 5).map((order) => (
+                      <Link
+                        key={order._id}
+                        to={`/order-confirmation/${order._id}`}
+                        style={{ textDecoration:"none" }}
+                      >
+                        <div style={{
+                          display:"flex", alignItems:"center", justifyContent:"space-between",
+                          padding:"0.875rem 1rem",
+                          border:"1px solid var(--clr-border-light)",
+                          borderRadius:"var(--radius-md)",
+                          transition:"background 0.1s",
+                          background:"var(--clr-bg-subtle)"
+                        }}>
+                          <div>
+                            <p style={{ fontFamily:"monospace", fontSize:"0.75rem", color:"var(--clr-text-400)", marginBottom:"0.2rem" }}>
+                              #{order._id.slice(-8).toUpperCase()}
+                            </p>
+                            <p style={{ fontSize:"0.875rem", fontWeight:600, color:"var(--clr-text-800)" }}>
+                              {order.store?.name || "—"}
+                            </p>
+                            <p style={{ fontSize:"0.75rem", color:"var(--clr-text-500)" }}>
+                              {new Date(order.createdAt).toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" })}
+                            </p>
+                          </div>
+                          <div style={{ textAlign:"right" }}>
+                            <span className={`badge badge--${order.status}`} style={{ marginBottom:"0.25rem", display:"inline-block" }}>
+                              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                            </span>
+                            <p style={{ fontSize:"0.9375rem", fontWeight:700, color:"var(--clr-text-900)" }}>
+                              ₹{order.totalAmount?.toLocaleString()}
+                            </p>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                    {myOrders.length > 5 && (
+                      <Link to="/my-orders" style={{ textAlign:"center", fontSize:"0.875rem", color:"var(--clr-primary)", textDecoration:"none", padding:"0.5rem" }}>
+                        View all {myOrders.length} orders →
+                      </Link>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+        </main>
+      </div>
+    </div>
+  );
+}

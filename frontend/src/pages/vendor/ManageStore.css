@@ -1,0 +1,321 @@
+.ms-page {
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.ms-page--wide {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.ms-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.ms-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--clr-text-900);
+}
+
+.ms-cancel-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  color: var(--clr-text-500);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.ms-cancel-btn:hover {
+  color: var(--clr-text-700);
+}
+
+.ms-store-card {
+  background-color: #fff;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--clr-border-light);
+  overflow: hidden;
+}
+
+.ms-store-banner {
+  padding: 2.5rem 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.ms-store-logo {
+  width: 7rem;
+  height: 7rem;
+  border-radius: 50%;
+  outline: 4px solid rgba(255, 255, 255, 0.6);
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.ms-store-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ms-store-logo__initial {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #fff;
+  user-select: none;
+}
+
+.ms-store-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.75rem;
+}
+
+.ms-store-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.ms-store-badge-category {
+  font-size: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+}
+
+.ms-store-badge-status {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.ms-store-badge-status--active {
+  background-color: rgba(52, 211, 153, 0.3);
+}
+
+.ms-store-badge-status--inactive {
+  background-color: rgba(248, 113, 113, 0.3);
+}
+
+.ms-store-desc {
+  padding: 1.25rem 1.5rem 0.5rem;
+}
+
+.ms-store-desc p {
+  font-size: 0.875rem;
+  color: var(--clr-text-600);
+  line-height: 1.6;
+}
+
+.ms-store-contacts {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ms-store-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ms-store-contact-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--clr-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--clr-primary);
+}
+
+.ms-store-contact-text {
+  font-size: 0.875rem;
+  color: var(--clr-text-700);
+}
+
+.ms-no-contact {
+  font-size: 0.875rem;
+  color: var(--clr-text-400);
+  font-style: italic;
+  text-align: center;
+  padding: 0.25rem 0;
+}
+
+.ms-form-card {
+  background-color: #fff;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--clr-border);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.ms-logo-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ms-logo-upload-label {
+  cursor: pointer;
+  position: relative;
+}
+
+.ms-logo-upload-inner {
+  width: 7rem;
+  height: 7rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--clr-primary-light), #f3e8ff);
+  border: 2px dashed #a5b4fc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.ms-logo-upload-label:hover .ms-logo-upload-inner {
+  border-color: var(--clr-primary);
+}
+
+.ms-logo-upload-inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ms-logo-upload-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #a5b4fc;
+  transition: color 0.15s;
+}
+
+.ms-logo-upload-label:hover .ms-logo-upload-icon {
+  color: var(--clr-primary);
+}
+
+.ms-logo-upload-icon span {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.ms-logo-upload-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s;
+}
+
+.ms-logo-upload-label:hover .ms-logo-upload-overlay {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+.ms-logo-upload-overlay svg {
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.ms-logo-upload-label:hover .ms-logo-upload-overlay svg {
+  opacity: 1;
+}
+
+.ms-logo-upload-text {
+  font-size: 0.75rem;
+  color: var(--clr-text-400);
+}
+
+.ms-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .ms-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.ms-submit-btn {
+  width: 100%;
+  background-color: var(--clr-primary);
+  color: #fff;
+  font-weight: 600;
+  padding: 0.625rem 0;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.ms-submit-btn:hover {
+  background-color: var(--clr-primary-hover);
+}
+
+.ms-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ms-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--clr-primary);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.ms-edit-btn:hover {
+  background-color: var(--clr-primary-hover);
+}

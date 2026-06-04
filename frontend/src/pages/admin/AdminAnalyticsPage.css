@@ -1,0 +1,117 @@
+.aanalytics-page {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .aanalytics-page {
+    padding: 1.5rem;
+  }
+}
+
+.aanalytics-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--clr-text-900);
+}
+
+.aanalytics-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .aanalytics-kpi-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .aanalytics-kpi-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.aanalytics-charts-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .aanalytics-charts-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.aanalytics-top-stores-table {
+  background-color: #fff;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+}
+
+.aanalytics-top-stores-table__title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--clr-text-900);
+  margin-bottom: 1rem;
+}
+
+.aanalytics-tooltip {
+  background-color: #fff;
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.aanalytics-tooltip__label {
+  font-weight: 600;
+  color: var(--clr-text-700);
+  margin-bottom: 0.25rem;
+}
+
+.aanalytics-no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 12rem;
+  color: var(--clr-text-400);
+}
+
+.aanalytics-no-data svg {
+  margin-bottom: 0.5rem;
+}
+
+.aanalytics-no-data p {
+  font-size: 0.875rem;
+}
+
+.aanalytics-no-data--center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 12rem;
+  color: var(--clr-text-400);
+  font-size: 0.875rem;
+}
+
+.aanalytics-revenue-card {
+  background-color: #fff;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+}
+
+.aanalytics-revenue-card__title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--clr-text-900);
+  margin-bottom: 1.25rem;
+}

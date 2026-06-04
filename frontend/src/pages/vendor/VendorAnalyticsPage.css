@@ -1,0 +1,157 @@
+.vanalytics-page {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .vanalytics-page {
+    padding: 1.5rem;
+  }
+}
+
+.vanalytics-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--clr-text-900);
+}
+
+.vanalytics-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .vanalytics-kpi-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.vanalytics-alert {
+  background-color: var(--clr-amber-light);
+  border: 1px solid #fcd34d;
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.vanalytics-alert-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  color: #92400e;
+}
+
+.vanalytics-alert-header svg {
+  color: #d97706;
+}
+
+.vanalytics-alert-header h3 {
+  font-weight: 600;
+  color: #92400e;
+}
+
+.vanalytics-alert-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.vanalytics-alert-chip {
+  font-size: 0.75rem;
+  background-color: #fde68a;
+  color: #78350f;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+.vanalytics-charts-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .vanalytics-charts-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.vanalytics-recent-table {
+  background-color: #fff;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+}
+
+.vanalytics-recent-table__title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--clr-text-900);
+  margin-bottom: 1rem;
+}
+
+.vanalytics-tooltip {
+  background-color: #fff;
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.vanalytics-tooltip__label {
+  font-weight: 600;
+  color: var(--clr-text-700);
+  margin-bottom: 0.25rem;
+}
+
+.vanalytics-no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 12rem;
+  color: var(--clr-text-400);
+}
+
+.vanalytics-no-data svg {
+  margin-bottom: 0.5rem;
+}
+
+.vanalytics-no-data p {
+  font-size: 0.875rem;
+}
+
+.vanalytics-no-data--center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 12rem;
+  color: var(--clr-text-400);
+  font-size: 0.875rem;
+}
+
+.vanalytics-revenue-card {
+  background-color: #fff;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+}
+
+.vanalytics-revenue-card__title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--clr-text-900);
+  margin-bottom: 1.25rem;
+}
+
+.vanalytics-empty-orders {
+  font-size: 0.875rem;
+  color: var(--clr-text-400);
+  text-align: center;
+  padding: 1.5rem 0;
+}
