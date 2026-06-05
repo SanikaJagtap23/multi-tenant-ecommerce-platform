@@ -5,6 +5,7 @@ import { fetchAllProducts } from "../../features/product/productSlice";
 import { fetchAllStores } from "../../features/store/storeSlice";
 import { addToCart } from "../../features/cart/cartSlice";
 import Spinner from "../../components/common/Spinner";
+import { ProductCardSkeleton } from "../../components/common/Skeletons";
 import toast from "react-hot-toast";
 import {
   FiShoppingBag, FiArrowRight, FiPackage, FiStar,
@@ -12,6 +13,7 @@ import {
   FiTruck, FiShield, FiRefreshCw, FiHeadphones, FiHeart,
 } from "react-icons/fi";
 import { fetchWishlist, toggleWishlist } from "../../features/wishlist/wishlistSlice";
+// import { openAuthModal } from "../../features/auth/authSlice";
 import "./HomePage.css";
 
 // Category config with emoji + gradient colors
@@ -58,12 +60,6 @@ export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState(searchParams.get("category") || "");
   const [hovered, setHovered] = useState(null);
 
-  // Vendors & admins redirect to their portals
-  useEffect(() => {
-    if (userInfo?.role === "vendor") navigate("/vendor/dashboard", { replace: true });
-    if (userInfo?.role === "superadmin") navigate("/admin/dashboard", { replace: true });
-  }, [userInfo, navigate]);
-
   // Load wishlist when customer is logged in
   useEffect(() => {
     if (userInfo?.role === "customer") dispatch(fetchWishlist());
@@ -71,7 +67,7 @@ export default function HomePage() {
 
   const handleToggleWishlist = async (e, product) => {
     e.preventDefault();
-    if (!userInfo) { toast.error("Please sign in to save items."); navigate("/login"); return; }
+    if (!userInfo) { dispatch(openAuthModal("customer")); return; }
     if (userInfo.role !== "customer") { toast.error("Only customers can use the wishlist."); return; }
     const result = await dispatch(toggleWishlist(product._id));
     if (toggleWishlist.fulfilled.match(result)) {
@@ -97,7 +93,7 @@ export default function HomePage() {
 
   const handleAddToCart = (e, product) => {
     e.preventDefault();
-    if (!userInfo) { toast.error("Please sign in to add items to cart."); navigate("/login"); return; }
+    if (!userInfo) { dispatch(openAuthModal("customer")); return; }
     if (userInfo.role !== "customer") { toast.error("Only customers can shop."); return; }
     if (product.stock === 0) return;
 
@@ -156,9 +152,9 @@ export default function HomePage() {
                   Shop Now
                 </a>
                 {!userInfo && (
-                  <Link to="/vendor/login" className="hero__btn-outline">
+                  <button className="hero__btn-outline" onClick={() => dispatch(openAuthModal("vendor"))}>
                     🏪 Sell with us <FiArrowRight size={15} />
-                  </Link>
+                  </button>
                 )}
               </div>
 
@@ -318,7 +314,9 @@ export default function HomePage() {
         </div>
 
         {loading ? (
-          <div className="spinner-center"><Spinner /></div>
+          <div className="products-grid">
+            {[...Array(8)].map((_, i) => <ProductCardSkeleton key={i} />)}
+          </div>
         ) : filtered.length === 0 ? (
           <div className="products-empty">
             <div className="products-empty__icon">🔍</div>
@@ -482,12 +480,12 @@ export default function HomePage() {
               </p>
             </div>
             <div className="vendor-cta__actions">
-              <Link to="/vendor/register" className="vendor-cta__btn-primary">
+              <button className="vendor-cta__btn-primary" onClick={() => dispatch(openAuthModal("vendor"))}>
                 Create Free Store <FiArrowRight size={16} />
-              </Link>
-              <Link to="/vendor/login" className="vendor-cta__btn-outline">
+              </button>
+              <button className="vendor-cta__btn-outline" onClick={() => dispatch(openAuthModal("vendor"))}>
                 Vendor Login
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -504,11 +502,11 @@ export default function HomePage() {
           </div>
           <p className="site-footer__copy">© 2026 Tradezy. India's Multi-Vendor Marketplace.</p>
           <div className="site-footer__links">
-            <Link to="/vendor/login">Sell on Tradezy</Link>
+            <button onClick={() => dispatch(openAuthModal("vendor"))}>Sell on Tradezy</button>
             <span className="site-footer__dot">·</span>
-            <Link to="/login">Sign In</Link>
+            <button onClick={() => dispatch(openAuthModal("customer"))}>Sign In</button>
             <span className="site-footer__dot">·</span>
-            <Link to="/register">Register</Link>
+            <button onClick={() => dispatch(openAuthModal("customer"))}>Register</button>
           </div>
         </div>
       </footer>

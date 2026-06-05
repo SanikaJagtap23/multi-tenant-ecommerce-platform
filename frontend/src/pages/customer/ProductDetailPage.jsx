@@ -4,11 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProductById } from "../../features/product/productSlice";
 import { addToCart } from "../../features/cart/cartSlice";
 import { fetchWishlist, toggleWishlist } from "../../features/wishlist/wishlistSlice";
-import Spinner from "../../components/common/Spinner";
+// import { openAuthModal } from "../../features/auth/authSlice";
+import { ProductDetailSkeleton } from "../../components/common/Skeletons";
 import toast from "react-hot-toast";
 import {
   FiShoppingCart, FiArrowLeft, FiStar, FiPackage,
   FiTruck, FiShield, FiHome, FiHeart,
+  FiZoomIn, FiChevronLeft, FiChevronRight, FiX,
 } from "react-icons/fi";
 import "./ProductDetailPage.css";
 
@@ -23,6 +25,7 @@ export default function ProductDetailPage() {
 
   const [activeImage, setActiveImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   useEffect(() => {
     dispatch(fetchProductById(id));
@@ -34,10 +37,22 @@ export default function ProductDetailPage() {
     if (userInfo?.role === "customer") dispatch(fetchWishlist());
   }, [userInfo]);
 
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const total = product?.images?.length || 1;
+    const handleKey = (e) => {
+      if (e.key === "Escape") setLightboxOpen(false);
+      if (e.key === "ArrowRight") setActiveImage((i) => (i + 1) % total);
+      if (e.key === "ArrowLeft")  setActiveImage((i) => (i - 1 + total) % total);
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [lightboxOpen, product]);
+
   const isWishlisted = product ? wishlistIds.includes(product._id) : false;
 
   const handleToggleWishlist = async () => {
-    if (!userInfo) { toast.error("Please sign in first."); navigate("/login"); return; }
+    if (!userInfo) { dispatch(openAuthModal("customer")); return; }
     if (userInfo.role !== "customer") { toast.error("Only customers can use the wishlist."); return; }
     const result = await dispatch(toggleWishlist(product._id));
     if (toggleWishlist.fulfilled.match(result)) {
@@ -52,8 +67,7 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = () => {
     if (!userInfo) {
-      toast.error("Please login to add items to cart.");
-      navigate("/login");
+      dispatch(openAuthModal("customer"));
       return;
     }
     if (userInfo.role !== "customer") {
@@ -78,8 +92,8 @@ export default function ProductDetailPage() {
   };
 
   if (loading) return (
-    <div className="product-detail-loading">
-      <Spinner size="lg" />
+    <div className="product-detail-page">
+      <ProductDetailSkeleton />
     </div>
   );
 
@@ -121,9 +135,12 @@ export default function ProductDetailPage() {
           <div className="product-detail-grid">
             {/* Image Gallery */}
             <div className="product-detail-gallery">
-              <div className="product-detail-main-image">
+              <div
+                className="product-detail-main-image product-detail-main-image--clickable"
+                onClick={() => images[activeImage] && setLightboxOpen(true)}
+              >
                 {images[activeImage] ? (
-                  <img src={images[activeImage]} alt={product.name} />
+                  <img key={activeImage} src={images[activeImage]} alt={product.name} className="product-detail-img-fade" />
                 ) : (
                   <div className="product-detail-main-image__placeholder">
                     <FiPackage size={80} />
@@ -131,6 +148,11 @@ export default function ProductDetailPage() {
                 )}
                 {discount > 0 && (
                   <span className="product-detail-main-image__discount">-{discount}%</span>
+                )}
+                {images[activeImage] && (
+                  <div className="product-detail-zoom-hint">
+                    <FiZoomIn size={18} />
+                  </div>
                 )}
               </div>
               {images.length > 1 && (
@@ -282,6 +304,54 @@ export default function ProductDetailPage() {
           Back
         </button>
       </div>
+
+      {/* Lightbox */}
+      {lightboxOpen && (
+        <div className="lightbox-overlay" onClick={() => setLightboxOpen(false)}>
+          <button className="lightbox-close" onClick={() => setLightboxOpen(false)}>
+            <FiX size={22} />
+          </button>
+
+          {images.length > 1 && (
+            <button
+              className="lightbox-arrow lightbox-arrow--prev"
+              onClick={(e) => { e.stopPropagation(); setActiveImage((i) => (i - 1 + images.length) % images.length); }}
+            >
+              <FiChevronLeft size={28} />
+            </button>
+          )}
+
+          <div className="lightbox-img-wrap" onClick={(e) => e.stopPropagation()}>
+            <img key={activeImage} src={images[activeImage]} alt={product.name} className="lightbox-img product-detail-img-fade" />
+            {images.length > 1 && (
+              <p className="lightbox-counter">{activeImage + 1} / {images.length}</p>
+            )}
+          </div>
+
+          {images.length > 1 && (
+            <button
+              className="lightbox-arrow lightbox-arrow--next"
+              onClick={(e) => { e.stopPropagation(); setActiveImage((i) => (i + 1) % images.length); }}
+            >
+              <FiChevronRight size={28} />
+            </button>
+          )}
+
+          {images.length > 1 && (
+            <div className="lightbox-thumbs" onClick={(e) => e.stopPropagation()}>
+              {images.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveImage(i)}
+                  className={`lightbox-thumb${activeImage === i ? " lightbox-thumb--active" : ""}`}
+                >
+                  <img src={img} alt="" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
