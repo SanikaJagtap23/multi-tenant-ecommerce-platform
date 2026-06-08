@@ -168,14 +168,14 @@ export default function CheckoutPage() {
 
                 <div className="checkout-address-grid">
                   {[
-                    { name: "fullName",   label: "Full Name",      placeholder: "John Doe",          col: 2 },
-                    { name: "email",      label: "Email",          placeholder: "john@example.com",  type: "email" },
-                    { name: "phone",      label: "Phone Number",   placeholder: "+91 9876543210" },
-                    { name: "street",     label: "Street Address", placeholder: "123 Main Street",   col: 2 },
-                    { name: "city",       label: "City",           placeholder: "Mumbai" },
-                    { name: "state",      label: "State",          placeholder: "Maharashtra" },
-                    { name: "postalCode", label: "Postal Code",    placeholder: "400001" },
-                    { name: "country",    label: "Country",        placeholder: "India" },
+                    { name: "fullName",   label: "Full Name",      placeholder: "Full name",         col: 2 },
+                    { name: "email",      label: "Email",          placeholder: "Email address",     type: "email" },
+                    { name: "phone",      label: "Phone Number",   placeholder: "Phone number" },
+                    { name: "street",     label: "Street Address", placeholder: "Street address",    col: 2 },
+                    { name: "city",       label: "City",           placeholder: "City" },
+                    { name: "state",      label: "State",          placeholder: "State" },
+                    { name: "postalCode", label: "Postal Code",    placeholder: "PIN code" },
+                    { name: "country",    label: "Country",        placeholder: "Country" },
                   ].map(({ name, label, placeholder, type = "text", col }) => (
                     <div key={name} className={`checkout-address-field${col === 2 ? " checkout-address-field--full" : ""}`}>
                       <label>

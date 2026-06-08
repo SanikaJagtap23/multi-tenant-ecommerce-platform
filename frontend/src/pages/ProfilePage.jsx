@@ -273,7 +273,7 @@ export default function ProfilePage() {
                             value={infoForm.name}
                             onChange={(e) => setInfoForm({ ...infoForm, name: e.target.value })}
                             required
-                            placeholder="Your full name"
+                            placeholder="Full name"
                           />
                         </div>
                         <div>
@@ -282,7 +282,7 @@ export default function ProfilePage() {
                             className="form-input"
                             value={infoForm.phone}
                             onChange={(e) => setInfoForm({ ...infoForm, phone: e.target.value })}
-                            placeholder="+91 98765 43210"
+                            placeholder="Phone number"
                             type="tel"
                           />
                         </div>
@@ -374,7 +374,7 @@ export default function ProfilePage() {
                       value={passForm.currentPassword}
                       onChange={(e) => setPassForm({ ...passForm, currentPassword: e.target.value })}
                       required
-                      placeholder="Enter current password"
+                      placeholder="Current password"
                     />
                   </div>
                   <div>
@@ -386,7 +386,7 @@ export default function ProfilePage() {
                       onChange={(e) => setPassForm({ ...passForm, newPassword: e.target.value })}
                       required
                       minLength={6}
-                      placeholder="Min. 6 characters"
+                      placeholder="New password"
                     />
                   </div>
                   <div>
@@ -397,7 +397,7 @@ export default function ProfilePage() {
                       value={passForm.confirmPassword}
                       onChange={(e) => setPassForm({ ...passForm, confirmPassword: e.target.value })}
                       required
-                      placeholder="Repeat new password"
+                      placeholder="Confirm new password"
                     />
                   </div>
                   <div className="profile-form__actions">
@@ -511,35 +511,35 @@ export default function ProfilePage() {
                       </div>
                       <div className="addr-form__field addr-form__field--full">
                         <label className="form-label">Full Name <span style={{ color: "var(--clr-red)" }}>*</span></label>
-                        <input className="form-input" value={addrForm.fullName} onChange={(e) => setAddrForm({ ...addrForm, fullName: e.target.value })} required placeholder="John Doe" />
+                        <input className="form-input" value={addrForm.fullName} onChange={(e) => setAddrForm({ ...addrForm, fullName: e.target.value })} required placeholder="Full name" />
                       </div>
                       <div className="addr-form__field">
                         <label className="form-label">Email</label>
-                        <input className="form-input" type="email" value={addrForm.email} onChange={(e) => setAddrForm({ ...addrForm, email: e.target.value })} placeholder="john@example.com" />
+                        <input className="form-input" type="email" value={addrForm.email} onChange={(e) => setAddrForm({ ...addrForm, email: e.target.value })} placeholder="Email address" />
                       </div>
                       <div className="addr-form__field">
                         <label className="form-label">Phone</label>
-                        <input className="form-input" type="tel" value={addrForm.phone} onChange={(e) => setAddrForm({ ...addrForm, phone: e.target.value })} placeholder="+91 9876543210" />
+                        <input className="form-input" type="tel" value={addrForm.phone} onChange={(e) => setAddrForm({ ...addrForm, phone: e.target.value })} placeholder="Phone number" />
                       </div>
                       <div className="addr-form__field addr-form__field--full">
                         <label className="form-label">Street Address <span style={{ color: "var(--clr-red)" }}>*</span></label>
-                        <input className="form-input" value={addrForm.street} onChange={(e) => setAddrForm({ ...addrForm, street: e.target.value })} required placeholder="123 Main Street" />
+                        <input className="form-input" value={addrForm.street} onChange={(e) => setAddrForm({ ...addrForm, street: e.target.value })} required placeholder="Street address" />
                       </div>
                       <div className="addr-form__field">
                         <label className="form-label">City <span style={{ color: "var(--clr-red)" }}>*</span></label>
-                        <input className="form-input" value={addrForm.city} onChange={(e) => setAddrForm({ ...addrForm, city: e.target.value })} required placeholder="Mumbai" />
+                        <input className="form-input" value={addrForm.city} onChange={(e) => setAddrForm({ ...addrForm, city: e.target.value })} required placeholder="City" />
                       </div>
                       <div className="addr-form__field">
                         <label className="form-label">State <span style={{ color: "var(--clr-red)" }}>*</span></label>
-                        <input className="form-input" value={addrForm.state} onChange={(e) => setAddrForm({ ...addrForm, state: e.target.value })} required placeholder="Maharashtra" />
+                        <input className="form-input" value={addrForm.state} onChange={(e) => setAddrForm({ ...addrForm, state: e.target.value })} required placeholder="State" />
                       </div>
                       <div className="addr-form__field">
                         <label className="form-label">Postal Code <span style={{ color: "var(--clr-red)" }}>*</span></label>
-                        <input className="form-input" value={addrForm.postalCode} onChange={(e) => setAddrForm({ ...addrForm, postalCode: e.target.value })} required placeholder="400001" />
+                        <input className="form-input" value={addrForm.postalCode} onChange={(e) => setAddrForm({ ...addrForm, postalCode: e.target.value })} required placeholder="PIN code" />
                       </div>
                       <div className="addr-form__field">
                         <label className="form-label">Country</label>
-                        <input className="form-input" value={addrForm.country} onChange={(e) => setAddrForm({ ...addrForm, country: e.target.value })} placeholder="India" />
+                        <input className="form-input" value={addrForm.country} onChange={(e) => setAddrForm({ ...addrForm, country: e.target.value })} placeholder="Country" />
                       </div>
                     </div>
                     <label className="addr-form__default-check">

@@ -170,7 +170,7 @@ export default function AddEditProduct() {
             value={form.name}
             onChange={handleChange}
             required
-            placeholder="e.g. Wireless Headphones"
+            placeholder="Product name"
             className="form-input"
           />
         </div>
@@ -202,7 +202,7 @@ export default function AddEditProduct() {
             value={form.description}
             onChange={handleChange}
             rows={3}
-            placeholder="Describe your product..."
+            placeholder="Product description"
             className="form-textarea"
           />
         </div>
@@ -262,7 +262,7 @@ export default function AddEditProduct() {
               name="sku"
               value={form.sku}
               onChange={handleChange}
-              placeholder="e.g. WH-1234"
+              placeholder="SKU"
               className="form-input"
             />
           </div>

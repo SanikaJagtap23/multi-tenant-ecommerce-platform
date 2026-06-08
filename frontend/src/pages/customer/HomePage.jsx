@@ -470,6 +470,11 @@ export default function HomePage() {
             <h2>
               <FiAward className="stores-award-icon" /> Featured Stores
             </h2>
+            {stores.length > 8 && (
+              <Link to="/stores" className="stores-view-all">
+                View All ({stores.length}) <FiArrowRight size={14} />
+              </Link>
+            )}
           </div>
           <div className="stores-grid">
             {stores.slice(0, 8).map((store, i) => {
@@ -477,7 +482,7 @@ export default function HomePage() {
               const gradient = `linear-gradient(to right, ${from}, ${to})`;
               const gradientBr = `linear-gradient(to bottom right, ${from}, ${to})`;
               return (
-                <Link key={store._id} to={`/?store=${store._id}`} className="store-card">
+                <Link key={store._id} to={`/store/${store._id}`} className="store-card">
                   <div className="store-card__accent" style={{ background: gradient }} />
                   <div className="store-card__body">
                     <div className="store-card__logo" style={{ background: gradientBr }}>
@@ -496,6 +501,13 @@ export default function HomePage() {
               );
             })}
           </div>
+          {stores.length > 8 && (
+            <div className="stores-view-all-row">
+              <Link to="/stores" className="stores-view-all-btn">
+                View All Stores <FiArrowRight size={15} />
+              </Link>
+            </div>
+          )}
         </section>
       )}
 

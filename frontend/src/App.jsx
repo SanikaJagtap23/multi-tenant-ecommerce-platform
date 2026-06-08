@@ -11,6 +11,8 @@ import AuthModal from "./pages/auth/AuthModal";
 // Customer pages
 import HomePage from "./pages/customer/HomePage";
 import ProductDetailPage from "./pages/customer/ProductDetailPage";
+import StorePage from "./pages/customer/StorePage";
+import StoresPage from "./pages/customer/StoresPage";
 import CartPage from "./pages/customer/CartPage";
 import CheckoutPage from "./pages/customer/CheckoutPage";
 import OrderConfirmationPage from "./pages/customer/OrderConfirmationPage";
@@ -48,6 +50,8 @@ export default function App() {
         {/* Public — customer shop */}
         <Route path="/" element={<HomePage />} />
         <Route path="/product/:id" element={<ProductDetailPage />} />
+        <Route path="/stores" element={<StoresPage />} />
+        <Route path="/store/:id" element={<StorePage />} />
         <Route path="/cart" element={<CartPage />} />
 
         {/* Old auth pages — redirect to home (modal handles login) */}

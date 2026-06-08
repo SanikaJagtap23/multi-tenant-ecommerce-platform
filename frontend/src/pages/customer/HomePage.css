@@ -1005,6 +1005,41 @@
   color: var(--clr-amber);
 }
 
+.stores-view-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #6366f1;
+  text-decoration: none;
+  padding: 0.35rem 0.75rem;
+  border: 1.5px solid #e0e7ff;
+  border-radius: 0.5rem;
+  transition: background 0.15s, border-color 0.15s;
+}
+.stores-view-all:hover { background: #ede9fe; border-color: #c7d2fe; }
+
+.stores-view-all-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+.stores-view-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.5rem;
+  background: #6366f1;
+  color: #fff;
+  border-radius: 0.625rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+.stores-view-all-btn:hover { opacity: 0.88; }
+
 .stores-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

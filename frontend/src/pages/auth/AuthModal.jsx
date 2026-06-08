@@ -109,7 +109,7 @@ export default function AuthModal() {
                 <label className="am-label--vendor">Full Name</label>
                 <div className="am-input-wrap am-input-wrap--vendor">
                   <FiUser className="am-input-icon" size={15} />
-                  <input type="text" name="name" value={form.name} onChange={handleChange} required placeholder="Store owner name" autoComplete="name" />
+                  <input type="text" name="name" value={form.name} onChange={handleChange} required placeholder="Full name" autoComplete="name" />
                 </div>
               </div>
             )}
@@ -117,14 +117,14 @@ export default function AuthModal() {
               <label className="am-label--vendor">Email</label>
               <div className="am-input-wrap am-input-wrap--vendor">
                 <FiMail className="am-input-icon" size={15} />
-                <input ref={emailRef} type="email" name="email" value={form.email} onChange={handleChange} required placeholder="vendor@example.com" autoComplete="email" />
+                <input ref={emailRef} type="email" name="email" value={form.email} onChange={handleChange} required placeholder="Email address" autoComplete="email" />
               </div>
             </div>
             <div className="am-field">
               <label className="am-label--vendor">Password</label>
               <div className="am-input-wrap am-input-wrap--vendor">
                 <FiLock className="am-input-icon" size={15} />
-                <input type={showPass ? "text" : "password"} name="password" value={form.password} onChange={handleChange} required minLength={6} placeholder="Min. 6 characters" autoComplete={mode === "signin" ? "current-password" : "new-password"} />
+                <input type={showPass ? "text" : "password"} name="password" value={form.password} onChange={handleChange} required minLength={6} placeholder="Password" autoComplete={mode === "signin" ? "current-password" : "new-password"} />
                 <button type="button" className="am-pass-toggle am-pass-toggle--vendor" onClick={() => setShowPass((v) => !v)} tabIndex={-1}>
                   {showPass ? <FiEyeOff size={15} /> : <FiEye size={15} />}
                 </button>
@@ -177,7 +177,7 @@ export default function AuthModal() {
               <label>Full Name</label>
               <div className="am-input-wrap">
                 <FiUser className="am-input-icon" size={15} />
-                <input type="text" name="name" value={form.name} onChange={handleChange} required placeholder="John Doe" autoComplete="name" />
+                <input type="text" name="name" value={form.name} onChange={handleChange} required placeholder="Full name" autoComplete="name" />
               </div>
             </div>
           )}
@@ -185,14 +185,14 @@ export default function AuthModal() {
             <label>Email</label>
             <div className="am-input-wrap">
               <FiMail className="am-input-icon" size={15} />
-              <input ref={emailRef} type="email" name="email" value={form.email} onChange={handleChange} required placeholder="you@example.com" autoComplete="email" />
+              <input ref={emailRef} type="email" name="email" value={form.email} onChange={handleChange} required placeholder="Email address" autoComplete="email" />
             </div>
           </div>
           <div className="am-field">
             <label>Password</label>
             <div className="am-input-wrap">
               <FiLock className="am-input-icon" size={15} />
-              <input type={showPass ? "text" : "password"} name="password" value={form.password} onChange={handleChange} required minLength={6} placeholder="Min. 6 characters" autoComplete={mode === "signin" ? "current-password" : "new-password"} />
+              <input type={showPass ? "text" : "password"} name="password" value={form.password} onChange={handleChange} required minLength={6} placeholder="Password" autoComplete={mode === "signin" ? "current-password" : "new-password"} />
               <button type="button" className="am-pass-toggle" onClick={() => setShowPass((v) => !v)} tabIndex={-1}>
                 {showPass ? <FiEyeOff size={15} /> : <FiEye size={15} />}
               </button>

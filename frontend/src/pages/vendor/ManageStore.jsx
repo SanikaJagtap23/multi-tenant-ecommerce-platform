@@ -213,7 +213,7 @@ export default function ManageStore() {
             Store Name <span style={{ color: "var(--clr-red)" }}>*</span>
           </label>
           <input type="text" name="name" value={form.name} onChange={handleChange} required
-            placeholder="My Awesome Store"
+            placeholder="Store name"
             className="form-input"
           />
         </div>
@@ -233,7 +233,7 @@ export default function ManageStore() {
         <div>
           <label className="form-label">Description</label>
           <textarea name="description" value={form.description} onChange={handleChange} rows={3}
-            placeholder="Tell customers about your store..."
+            placeholder="Describe your store"
             className="form-textarea"
           />
         </div>
@@ -242,14 +242,14 @@ export default function ManageStore() {
           <div>
             <label className="form-label">Contact Email</label>
             <input type="email" name="contactEmail" value={form.contactEmail} onChange={handleChange}
-              placeholder="store@example.com"
+              placeholder="Email address"
               className="form-input"
             />
           </div>
           <div>
             <label className="form-label">Contact Phone</label>
             <input type="tel" name="contactPhone" value={form.contactPhone} onChange={handleChange}
-              placeholder="+91 98765 43210"
+              placeholder="Phone number"
               className="form-input"
             />
           </div>
@@ -258,7 +258,7 @@ export default function ManageStore() {
         <div>
           <label className="form-label">Address</label>
           <input type="text" name="address" value={form.address} onChange={handleChange}
-            placeholder="123 MG Road, Mumbai, Maharashtra"
+            placeholder="Store address"
             className="form-input"
           />
         </div>
