@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { logout } from "../../features/auth/authSlice";
+import { logout, openAuthModal } from "../../features/auth/authSlice";
 import toast from "react-hot-toast";
 import {
   FiShoppingBag, FiLogOut, FiGrid, FiShoppingCart,
@@ -11,15 +11,15 @@ import {
 import "./Navbar.css";
 
 const CATEGORIES = [
-  { label: "All", value: "" },
-  { label: "Electronics", value: "Electronics" },
-  { label: "Fashion", value: "Fashion & Clothing" },
-  { label: "Home & Garden", value: "Home & Garden" },
-  { label: "Sports", value: "Sports & Outdoors" },
-  { label: "Books", value: "Books & Media" },
-  { label: "Health", value: "Health & Beauty" },
-  { label: "Toys", value: "Toys & Games" },
-  { label: "Food", value: "Food & Beverages" },
+  { label: "All",           value: "" },
+  { label: "Electronics",   value: "Electronics" },
+  { label: "Fashion",       value: "Fashion" },
+  { label: "Home & Living", value: "Home & Living" },
+  { label: "Sports",        value: "Sports & Fitness" },
+  { label: "Books",         value: "Books" },
+  { label: "Beauty",        value: "Beauty & Personal Care" },
+  { label: "Toys",          value: "Toys & Games" },
+  { label: "Food",          value: "Food & Beverages" },
 ];
 
 export default function Navbar() {
@@ -278,8 +278,18 @@ export default function Navbar() {
               {/* Auth buttons — guests only */}
               {!userInfo && (
                 <div className="navbar-auth-guest">
-                  <Link to="/login" className="navbar-signin-btn">Sign In</Link>
-                  <Link to="/register" className="navbar-register-btn">Register</Link>
+                  <button
+                    className="navbar-signin-btn"
+                    onClick={() => dispatch(openAuthModal("customer"))}
+                  >
+                    Sign In
+                  </button>
+                  <button
+                    className="navbar-register-btn"
+                    onClick={() => dispatch(openAuthModal("customer"))}
+                  >
+                    Register
+                  </button>
                 </div>
               )}
 
@@ -340,8 +350,18 @@ export default function Navbar() {
             )}
             {!userInfo && (
               <>
-                <Link to="/login" onClick={() => setMobileOpen(false)} className="navbar-mobile-link">Sign In</Link>
-                <Link to="/register" onClick={() => setMobileOpen(false)} className="navbar-mobile-link">Register</Link>
+                <button
+                  className="navbar-mobile-link"
+                  onClick={() => { setMobileOpen(false); dispatch(openAuthModal("customer")); }}
+                >
+                  Sign In / Register
+                </button>
+                <button
+                  className="navbar-mobile-link"
+                  onClick={() => { setMobileOpen(false); dispatch(openAuthModal("vendor")); }}
+                >
+                  Vendor Login
+                </button>
               </>
             )}
           </div>

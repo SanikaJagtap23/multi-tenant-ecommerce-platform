@@ -1,14 +1,12 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 // Layout & guards
 import Navbar from "./components/common/Navbar";
 import VendorLayout from "./components/common/VendorLayout";
 import ProtectedRoute from "./components/common/ProtectedRoute";
+import AuthModal from "./pages/auth/AuthModal";
 
-// Auth pages
-import AuthPage from "./pages/auth/AuthPage";
-import VendorAuthPage from "./pages/auth/VendorAuthPage";
 
 // Customer pages
 import HomePage from "./pages/customer/HomePage";
@@ -43,6 +41,7 @@ export default function App() {
   return (
     <Router>
       <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
+      <AuthModal />
       <Navbar />
 
       <Routes>
@@ -51,11 +50,11 @@ export default function App() {
         <Route path="/product/:id" element={<ProductDetailPage />} />
         <Route path="/cart" element={<CartPage />} />
 
-        {/* Auth */}
-        <Route path="/login" element={<AuthPage />} />
-        <Route path="/register" element={<AuthPage />} />
-        <Route path="/vendor/login" element={<VendorAuthPage />} />
-        <Route path="/vendor/register" element={<VendorAuthPage />} />
+        {/* Old auth pages — redirect to home (modal handles login) */}
+        <Route path="/login"           element={<Navigate to="/" replace />} />
+        <Route path="/register"        element={<Navigate to="/" replace />} />
+        <Route path="/vendor/login"    element={<Navigate to="/" replace />} />
+        <Route path="/vendor/register" element={<Navigate to="/" replace />} />
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
         {/* Protected — any logged-in user */}

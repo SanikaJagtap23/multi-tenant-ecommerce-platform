@@ -1,27 +1,30 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { updateProfile, updatePassword, logout } from "../features/auth/authSlice";
+import { updateProfile, updatePassword, logout, fetchAddresses, addAddress, updateAddress, deleteAddress } from "../features/auth/authSlice";
 import { fetchMyOrders } from "../features/order/orderSlice";
 import Spinner from "../components/common/Spinner";
 import toast from "react-hot-toast";
 import {
   FiUser, FiMail, FiPhone, FiLock, FiShoppingBag, FiHeart,
   FiLogOut, FiEdit2, FiCheck, FiAlertCircle, FiCalendar,
-  FiGrid, FiPackage,
+  FiGrid, FiPackage, FiMapPin, FiPlus, FiTrash2, FiStar,
 } from "react-icons/fi";
 import "./ProfilePage.css";
 
 const SECTIONS = {
-  INFO:     "info",
-  PASSWORD: "password",
-  ORDERS:   "orders",
+  INFO:      "info",
+  PASSWORD:  "password",
+  ORDERS:    "orders",
+  ADDRESSES: "addresses",
 };
+
+const BLANK_ADDR = { label: "Home", fullName: "", email: "", phone: "", street: "", city: "", state: "", postalCode: "", country: "India", isDefault: false };
 
 export default function ProfilePage() {
   const dispatch   = useDispatch();
   const navigate   = useNavigate();
-  const { userInfo, loading } = useSelector((s) => s.auth);
+  const { userInfo, loading, addresses } = useSelector((s) => s.auth);
   const { myOrders } = useSelector((s) => s.order);
 
   const [activeSection, setActiveSection] = useState(SECTIONS.INFO);
@@ -31,6 +34,12 @@ export default function ProfilePage() {
   const [passForm, setPassForm] = useState({ currentPassword: "", newPassword: "", confirmPassword: "" });
   const [passSuccess, setPassSuccess] = useState("");
   const [passError, setPassError]   = useState("");
+
+  // Address state
+  const [addrForm, setAddrForm] = useState(BLANK_ADDR);
+  const [editingAddrId, setEditingAddrId] = useState(null);
+  const [showAddrForm, setShowAddrForm] = useState(false);
+  const [addrLoading, setAddrLoading] = useState(false);
 
   const isVendor   = userInfo?.role === "vendor";
   const isAdmin    = userInfo?.role === "superadmin";
@@ -42,7 +51,7 @@ export default function ProfilePage() {
   useEffect(() => {
     if (!userInfo) { navigate("/login"); return; }
     setInfoForm({ name: userInfo.name || "", phone: userInfo.phone || "" });
-    if (isCustomer) dispatch(fetchMyOrders());
+    if (isCustomer) { dispatch(fetchMyOrders()); dispatch(fetchAddresses()); }
   }, [userInfo]);
 
   const handleInfoSave = async (e) => {
@@ -81,6 +90,34 @@ export default function ProfilePage() {
     dispatch(logout());
     navigate("/");
     toast.success("Logged out.");
+  };
+
+  const openAddAddr = () => { setAddrForm(BLANK_ADDR); setEditingAddrId(null); setShowAddrForm(true); };
+  const openEditAddr = (addr) => { setAddrForm({ ...addr }); setEditingAddrId(addr._id); setShowAddrForm(true); };
+  const cancelAddrForm = () => { setShowAddrForm(false); setEditingAddrId(null); };
+
+  const handleAddrSave = async (e) => {
+    e.preventDefault();
+    setAddrLoading(true);
+    let result;
+    if (editingAddrId) {
+      result = await dispatch(updateAddress({ addrId: editingAddrId, formData: addrForm }));
+    } else {
+      result = await dispatch(addAddress(addrForm));
+    }
+    setAddrLoading(false);
+    if (addAddress.fulfilled.match(result) || updateAddress.fulfilled.match(result)) {
+      toast.success(editingAddrId ? "Address updated!" : "Address added!");
+      setShowAddrForm(false);
+      setEditingAddrId(null);
+    } else {
+      toast.error(result.payload || "Failed to save address");
+    }
+  };
+
+  const handleAddrDelete = async (addrId) => {
+    const result = await dispatch(deleteAddress(addrId));
+    if (deleteAddress.fulfilled.match(result)) toast.success("Address removed.");
   };
 
   if (!userInfo) return null;
@@ -140,6 +177,12 @@ export default function ProfilePage() {
                     onClick={() => setActiveSection(SECTIONS.ORDERS)}
                   >
                     <FiPackage size={15} /> My Orders
+                  </button>
+                  <button
+                    className={`profile-sidebar__nav-btn ${activeSection === SECTIONS.ADDRESSES ? "profile-sidebar__nav-btn--active" : ""}`}
+                    onClick={() => setActiveSection(SECTIONS.ADDRESSES)}
+                  >
+                    <FiMapPin size={15} /> Saved Addresses
                   </button>
                   <Link to="/wishlist" className="profile-sidebar__nav-btn">
                     <FiHeart size={15} /> My Wishlist
@@ -433,6 +476,125 @@ export default function ProfilePage() {
                       </Link>
                     )}
                   </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* ── SAVED ADDRESSES (customer only) ── */}
+          {activeSection === SECTIONS.ADDRESSES && isCustomer && (
+            <div className="profile-section">
+              <div className="profile-section__header">
+                <h2 className="profile-section__title">
+                  <FiMapPin className="profile-section__title-icon" size={16} />
+                  Saved Addresses
+                </h2>
+                {!showAddrForm && (
+                  <button className="profile-section__edit-btn" onClick={openAddAddr}>
+                    <FiPlus size={13} /> Add New
+                  </button>
+                )}
+              </div>
+
+              <div className="profile-section__body">
+
+                {/* Add / Edit form */}
+                {showAddrForm && (
+                  <form className="addr-form" onSubmit={handleAddrSave}>
+                    <h3 className="addr-form__title">{editingAddrId ? "Edit Address" : "New Address"}</h3>
+                    <div className="addr-form__grid">
+                      <div className="addr-form__field addr-form__field--full">
+                        <label className="form-label">Label</label>
+                        <select className="form-select" value={addrForm.label} onChange={(e) => setAddrForm({ ...addrForm, label: e.target.value })}>
+                          {["Home", "Work", "Other"].map((l) => <option key={l}>{l}</option>)}
+                        </select>
+                      </div>
+                      <div className="addr-form__field addr-form__field--full">
+                        <label className="form-label">Full Name <span style={{ color: "var(--clr-red)" }}>*</span></label>
+                        <input className="form-input" value={addrForm.fullName} onChange={(e) => setAddrForm({ ...addrForm, fullName: e.target.value })} required placeholder="John Doe" />
+                      </div>
+                      <div className="addr-form__field">
+                        <label className="form-label">Email</label>
+                        <input className="form-input" type="email" value={addrForm.email} onChange={(e) => setAddrForm({ ...addrForm, email: e.target.value })} placeholder="john@example.com" />
+                      </div>
+                      <div className="addr-form__field">
+                        <label className="form-label">Phone</label>
+                        <input className="form-input" type="tel" value={addrForm.phone} onChange={(e) => setAddrForm({ ...addrForm, phone: e.target.value })} placeholder="+91 9876543210" />
+                      </div>
+                      <div className="addr-form__field addr-form__field--full">
+                        <label className="form-label">Street Address <span style={{ color: "var(--clr-red)" }}>*</span></label>
+                        <input className="form-input" value={addrForm.street} onChange={(e) => setAddrForm({ ...addrForm, street: e.target.value })} required placeholder="123 Main Street" />
+                      </div>
+                      <div className="addr-form__field">
+                        <label className="form-label">City <span style={{ color: "var(--clr-red)" }}>*</span></label>
+                        <input className="form-input" value={addrForm.city} onChange={(e) => setAddrForm({ ...addrForm, city: e.target.value })} required placeholder="Mumbai" />
+                      </div>
+                      <div className="addr-form__field">
+                        <label className="form-label">State <span style={{ color: "var(--clr-red)" }}>*</span></label>
+                        <input className="form-input" value={addrForm.state} onChange={(e) => setAddrForm({ ...addrForm, state: e.target.value })} required placeholder="Maharashtra" />
+                      </div>
+                      <div className="addr-form__field">
+                        <label className="form-label">Postal Code <span style={{ color: "var(--clr-red)" }}>*</span></label>
+                        <input className="form-input" value={addrForm.postalCode} onChange={(e) => setAddrForm({ ...addrForm, postalCode: e.target.value })} required placeholder="400001" />
+                      </div>
+                      <div className="addr-form__field">
+                        <label className="form-label">Country</label>
+                        <input className="form-input" value={addrForm.country} onChange={(e) => setAddrForm({ ...addrForm, country: e.target.value })} placeholder="India" />
+                      </div>
+                    </div>
+                    <label className="addr-form__default-check">
+                      <input type="checkbox" checked={addrForm.isDefault} onChange={(e) => setAddrForm({ ...addrForm, isDefault: e.target.checked })} />
+                      Set as default address
+                    </label>
+                    <div className="profile-form__actions" style={{ marginTop: "1rem" }}>
+                      <button type="submit" className="profile-form__save-btn" disabled={addrLoading}>
+                        {addrLoading ? <Spinner size="sm" /> : <FiCheck size={14} />}
+                        {editingAddrId ? "Update Address" : "Save Address"}
+                      </button>
+                      <button type="button" className="profile-form__cancel-btn" onClick={cancelAddrForm}>Cancel</button>
+                    </div>
+                  </form>
+                )}
+
+                {/* Address cards */}
+                {!showAddrForm && (
+                  addresses.length === 0 ? (
+                    <div className="addr-empty">
+                      <FiMapPin size={36} className="addr-empty__icon" />
+                      <p className="addr-empty__title">No saved addresses yet</p>
+                      <p className="addr-empty__desc">Add an address to speed up checkout.</p>
+                      <button className="profile-form__save-btn" onClick={openAddAddr} style={{ marginTop: "1rem", display: "inline-flex" }}>
+                        <FiPlus size={14} /> Add Address
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="addr-list">
+                      {addresses.map((addr) => (
+                        <div key={addr._id} className={`addr-card${addr.isDefault ? " addr-card--default" : ""}`}>
+                          <div className="addr-card__header">
+                            <span className="addr-card__label">{addr.label}</span>
+                            {addr.isDefault && (
+                              <span className="addr-card__default-badge">
+                                <FiStar size={10} /> Default
+                              </span>
+                            )}
+                          </div>
+                          <p className="addr-card__name">{addr.fullName}</p>
+                          <p className="addr-card__line">{addr.street}</p>
+                          <p className="addr-card__line">{addr.city}, {addr.state} — {addr.postalCode}</p>
+                          {addr.phone && <p className="addr-card__line">{addr.phone}</p>}
+                          <div className="addr-card__actions">
+                            <button className="addr-card__btn addr-card__btn--edit" onClick={() => openEditAddr(addr)}>
+                              <FiEdit2 size={12} /> Edit
+                            </button>
+                            <button className="addr-card__btn addr-card__btn--del" onClick={() => handleAddrDelete(addr._id)}>
+                              <FiTrash2 size={12} /> Delete
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )
                 )}
               </div>
             </div>

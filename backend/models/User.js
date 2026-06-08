@@ -45,6 +45,20 @@ const userSchema = new mongoose.Schema(
         ref: "Product",
       },
     ],
+    addresses: [
+      {
+        label:      { type: String, default: "Home" },
+        fullName:   { type: String, required: true },
+        email:      { type: String, default: "" },
+        phone:      { type: String, default: "" },
+        street:     { type: String, required: true },
+        city:       { type: String, required: true },
+        state:      { type: String, required: true },
+        postalCode: { type: String, required: true },
+        country:    { type: String, default: "India" },
+        isDefault:  { type: Boolean, default: false },
+      },
+    ],
   },
   { timestamps: true }
 );

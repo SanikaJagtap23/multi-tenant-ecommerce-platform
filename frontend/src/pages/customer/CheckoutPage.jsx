@@ -3,10 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { clearCart, groupByStore, calcStoreTotals } from "../../features/cart/cartSlice";
 import { clearOrderState } from "../../features/order/orderSlice";
+import { fetchAddresses } from "../../features/auth/authSlice";
 import axiosInstance from "../../api/axiosInstance";
 import Spinner from "../../components/common/Spinner";
 import toast from "react-hot-toast";
-import { FiMapPin, FiCreditCard, FiTruck, FiPackage, FiCheck } from "react-icons/fi";
+import { FiMapPin, FiCreditCard, FiTruck, FiPackage, FiCheck, FiChevronDown } from "react-icons/fi";
 import "./CheckoutPage.css";
 
 const STEPS = ["Address", "Payment", "Review"];
@@ -15,7 +16,7 @@ export default function CheckoutPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { items, subtotal, tax, shipping, total } = useSelector((s) => s.cart);
-  const { userInfo } = useSelector((s) => s.auth);
+  const { userInfo, addresses } = useSelector((s) => s.auth);
 
   const [step, setStep] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("cod");
@@ -35,6 +36,7 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     dispatch(clearOrderState());
+    dispatch(fetchAddresses());
   }, [dispatch]);
 
   // Redirect if cart empty
@@ -132,6 +134,38 @@ export default function CheckoutPage() {
                 <h2 className="checkout-section-title">
                   <FiMapPin className="checkout-section-title__icon" /> Shipping Address
                 </h2>
+
+                {/* Saved address picker */}
+                {addresses && addresses.length > 0 && (
+                  <div className="checkout-saved-addrs">
+                    <p className="checkout-saved-addrs__label">
+                      <FiChevronDown size={13} /> Use a saved address
+                    </p>
+                    <div className="checkout-saved-addrs__list">
+                      {addresses.map((addr) => (
+                        <button
+                          key={addr._id}
+                          type="button"
+                          className="checkout-saved-addr-btn"
+                          onClick={() => setAddress({
+                            fullName:   addr.fullName,
+                            email:      addr.email   || userInfo?.email || "",
+                            phone:      addr.phone   || "",
+                            street:     addr.street,
+                            city:       addr.city,
+                            state:      addr.state,
+                            postalCode: addr.postalCode,
+                            country:    addr.country || "India",
+                          })}
+                        >
+                          <span className="checkout-saved-addr-btn__label">{addr.label}</span>
+                          <span className="checkout-saved-addr-btn__detail">{addr.fullName} · {addr.city}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <div className="checkout-address-grid">
                   {[
                     { name: "fullName",   label: "Full Name",      placeholder: "John Doe",          col: 2 },

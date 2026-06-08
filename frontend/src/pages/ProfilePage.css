@@ -368,6 +368,178 @@
   margin-top: 0.75rem;
 }
 
+/* ── Saved Addresses ── */
+
+.addr-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.addr-empty__icon {
+  color: var(--clr-text-300);
+  margin-bottom: 0.75rem;
+}
+
+.addr-empty__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--clr-text-700);
+  margin: 0 0 0.25rem;
+}
+
+.addr-empty__desc {
+  font-size: 0.875rem;
+  color: var(--clr-text-400);
+  margin: 0;
+}
+
+.addr-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 540px) {
+  .addr-list { grid-template-columns: 1fr 1fr; }
+}
+
+.addr-card {
+  border: 1.5px solid var(--clr-border-light);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  background: var(--clr-bg-subtle);
+  position: relative;
+  transition: border-color 0.2s;
+}
+
+.addr-card--default {
+  border-color: var(--clr-primary);
+  background: var(--clr-primary-light);
+}
+
+.addr-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.addr-card__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--clr-text-500);
+  background: var(--clr-border-light);
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+}
+
+.addr-card__default-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--clr-primary);
+  background: #ede9fe;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+}
+
+.addr-card__name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--clr-text-800);
+  margin: 0 0 0.25rem;
+}
+
+.addr-card__line {
+  font-size: 0.8125rem;
+  color: var(--clr-text-500);
+  margin: 0;
+}
+
+.addr-card__actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.875rem;
+}
+
+.addr-card__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.3rem 0.625rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.addr-card__btn--edit {
+  background: var(--clr-border-light);
+  color: var(--clr-text-700);
+}
+
+.addr-card__btn--edit:hover {
+  background: #e2e8f0;
+}
+
+.addr-card__btn--del {
+  background: var(--clr-red-light);
+  color: var(--clr-red);
+}
+
+.addr-card__btn--del:hover {
+  background: #fee2e2;
+}
+
+/* Address add/edit form */
+.addr-form {
+  background: var(--clr-bg-subtle);
+  border: 1.5px solid var(--clr-border-light);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.addr-form__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--clr-text-800);
+  margin: 0 0 1rem;
+}
+
+.addr-form__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.875rem;
+}
+
+.addr-form__field { display: flex; flex-direction: column; gap: 0.3rem; }
+.addr-form__field--full { grid-column: 1 / -1; }
+
+.addr-form__default-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--clr-text-600);
+  margin-top: 0.75rem;
+  cursor: pointer;
+}
+
+@media (max-width: 480px) {
+  .addr-form__grid { grid-template-columns: 1fr; }
+  .addr-form__field--full { grid-column: auto; }
+}
+
 /* ── Mobile: stack sidebar below header ── */
 @media (max-width: 767px) {
   .profile-sidebar__identity {

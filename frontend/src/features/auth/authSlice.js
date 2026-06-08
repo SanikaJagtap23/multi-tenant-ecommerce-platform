@@ -7,8 +7,11 @@ const userFromStorage = localStorage.getItem("userInfo")
 
 const initialState = {
   userInfo: userFromStorage,
+  addresses: [],
   loading: false,
   error: null,
+  authModalOpen: false,
+  authModalTab: "customer",
 };
 
 export const register = createAsyncThunk(
@@ -65,6 +68,54 @@ export const updatePassword = createAsyncThunk(
   }
 );
 
+export const fetchAddresses = createAsyncThunk(
+  "auth/fetchAddresses",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await api.get("/auth/addresses");
+      return data.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to fetch addresses");
+    }
+  }
+);
+
+export const addAddress = createAsyncThunk(
+  "auth/addAddress",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const { data } = await api.post("/auth/addresses", formData);
+      return data.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to add address");
+    }
+  }
+);
+
+export const updateAddress = createAsyncThunk(
+  "auth/updateAddress",
+  async ({ addrId, formData }, { rejectWithValue }) => {
+    try {
+      const { data } = await api.put(`/auth/addresses/${addrId}`, formData);
+      return data.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to update address");
+    }
+  }
+);
+
+export const deleteAddress = createAsyncThunk(
+  "auth/deleteAddress",
+  async (addrId, { rejectWithValue }) => {
+    try {
+      const { data } = await api.delete(`/auth/addresses/${addrId}`);
+      return data.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to delete address");
+    }
+  }
+);
+
 export const fetchMe = createAsyncThunk(
   "auth/fetchMe",
   async (_, { rejectWithValue }) => {
@@ -84,9 +135,19 @@ const authSlice = createSlice({
     logout: (state) => {
       state.userInfo = null;
       state.error = null;
+      state.addresses = [];
       localStorage.removeItem("userInfo");
     },
     clearError: (state) => {
+      state.error = null;
+    },
+    openAuthModal: (state, action) => {
+      state.authModalOpen = true;
+      state.authModalTab = action.payload || "customer";
+      state.error = null;
+    },
+    closeAuthModal: (state) => {
+      state.authModalOpen = false;
       state.error = null;
     },
   },
@@ -133,9 +194,13 @@ const authSlice = createSlice({
       .addCase(updatePassword.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      .addCase(fetchAddresses.fulfilled, (state, action) => { state.addresses = action.payload; })
+      .addCase(addAddress.fulfilled,     (state, action) => { state.addresses = action.payload; })
+      .addCase(updateAddress.fulfilled,  (state, action) => { state.addresses = action.payload; })
+      .addCase(deleteAddress.fulfilled,  (state, action) => { state.addresses = action.payload; });
   },
 });
 
-export const { logout, clearError } = authSlice.actions;
+export const { logout, clearError, openAuthModal, closeAuthModal } = authSlice.actions;
 export default authSlice.reducer;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { fetchAllProducts } from "../../features/product/productSlice";
@@ -13,19 +13,19 @@ import {
   FiTruck, FiShield, FiRefreshCw, FiHeadphones, FiHeart,
 } from "react-icons/fi";
 import { fetchWishlist, toggleWishlist } from "../../features/wishlist/wishlistSlice";
-// import { openAuthModal } from "../../features/auth/authSlice";
+import { openAuthModal } from "../../features/auth/authSlice";
 import "./HomePage.css";
 
 // Category config with emoji + gradient colors
 const CATEGORIES = [
-  { label: "Electronics",     value: "Electronics",       emoji: "📱", gradFrom: "#3b82f6", gradTo: "#06b6d4" },
-  { label: "Fashion",         value: "Fashion & Clothing", emoji: "👗", gradFrom: "#ec4899", gradTo: "#fb7185" },
-  { label: "Home & Garden",   value: "Home & Garden",      emoji: "🏡", gradFrom: "#22c55e", gradTo: "#2dd4bf" },
-  { label: "Sports",          value: "Sports & Outdoors",  emoji: "⚽", gradFrom: "#f97316", gradTo: "#fbbf24" },
-  { label: "Books & Media",   value: "Books & Media",      emoji: "📚", gradFrom: "#f59e0b", gradTo: "#facc15" },
-  { label: "Health & Beauty", value: "Health & Beauty",    emoji: "💊", gradFrom: "#f43f5e", gradTo: "#f472b6" },
-  { label: "Toys & Games",    value: "Toys & Games",       emoji: "🎮", gradFrom: "#a855f7", gradTo: "#818cf8" },
-  { label: "Food",            value: "Food & Beverages",   emoji: "🍕", gradFrom: "#ef4444", gradTo: "#f97316" },
+  { label: "Electronics",          value: "Electronics",            emoji: "📱", gradFrom: "#3b82f6", gradTo: "#06b6d4" },
+  { label: "Fashion",              value: "Fashion",                emoji: "👗", gradFrom: "#ec4899", gradTo: "#fb7185" },
+  { label: "Home & Living",        value: "Home & Living",          emoji: "🏡", gradFrom: "#22c55e", gradTo: "#2dd4bf" },
+  { label: "Sports & Fitness",     value: "Sports & Fitness",       emoji: "⚽", gradFrom: "#f97316", gradTo: "#fbbf24" },
+  { label: "Books",                value: "Books",                  emoji: "📚", gradFrom: "#f59e0b", gradTo: "#facc15" },
+  { label: "Beauty & Personal Care", value: "Beauty & Personal Care", emoji: "💄", gradFrom: "#f43f5e", gradTo: "#f472b6" },
+  { label: "Toys & Games",         value: "Toys & Games",           emoji: "🎮", gradFrom: "#a855f7", gradTo: "#818cf8" },
+  { label: "Food",                 value: "Food & Beverages",       emoji: "🍕", gradFrom: "#ef4444", gradTo: "#f97316" },
 ];
 
 const FEATURES = [
@@ -117,7 +117,39 @@ export default function HomePage() {
     return matchSearch && matchCat;
   });
 
-  const topProducts = [...products].sort((a, b) => (b.comparePrice - b.price) - (a.comparePrice - a.price)).slice(0, 4);
+  // One representative product per category (highest discount), used for All-mode rotation
+  const heroByCategory = useMemo(() => {
+    return CATEGORIES
+      .map(({ value }) => {
+        const pool = products.filter(p => p.category === value);
+        return [...pool].sort((a, b) => (b.comparePrice - b.price) - (a.comparePrice - a.price))[0];
+      })
+      .filter(Boolean);
+  }, [products]);
+
+  // Auto-rotate hero cards every 3 s when no category is selected
+  const [heroOffset, setHeroOffset] = useState(0);
+  useEffect(() => {
+    if (activeCategory || heroByCategory.length < 2) return;
+    const id = setInterval(() => {
+      setHeroOffset(o => (o + 1) % heroByCategory.length);
+    }, 3000);
+    return () => clearInterval(id);
+  }, [activeCategory, heroByCategory.length]);
+
+  // Reset offset when category changes
+  useEffect(() => { setHeroOffset(0); }, [activeCategory]);
+
+  const topProducts = useMemo(() => {
+    if (activeCategory) {
+      return [...products.filter(p => p.category === activeCategory)]
+        .sort((a, b) => (b.comparePrice - b.price) - (a.comparePrice - a.price))
+        .slice(0, 4);
+    }
+    if (heroByCategory.length === 0) return [];
+    // Sliding window of 4 across all category reps
+    return [0, 1, 2, 3].map(i => heroByCategory[(heroOffset + i) % heroByCategory.length]);
+  }, [activeCategory, products, heroByCategory, heroOffset]);
 
   return (
     <div className="home-page">
@@ -177,7 +209,7 @@ export default function HomePage() {
             <div className="hero__preview">
               {topProducts.slice(0, 4).map((p, i) => (
                 <Link
-                  key={p._id}
+                  key={`${p._id}-${heroOffset}-${i}`}
                   to={`/product/${p._id}`}
                   className={`hero__preview-card${i === 1 ? " hero__preview-card--offset-down" : ""}${i === 3 ? " hero__preview-card--offset-up" : ""}`}
                 >
@@ -277,7 +309,7 @@ export default function HomePage() {
               <div className="promo-card__tag">👗 New Arrivals</div>
               <h3 className="promo-card__title">Trending Fashion</h3>
               <p className="promo-card__desc">Latest styles from top vendors</p>
-              <button onClick={() => handleCategoryClick("Fashion & Clothing")} className="promo-card__btn">
+              <button onClick={() => handleCategoryClick("Fashion")} className="promo-card__btn">
                 Explore <FiArrowRight size={12} />
               </button>
             </div>

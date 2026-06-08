@@ -15,15 +15,13 @@ import "./AddEditProduct.css";
 
 const CATEGORIES = [
   "Electronics",
-  "Fashion & Clothing",
-  "Home & Garden",
-  "Sports & Outdoors",
-  "Books & Media",
-  "Health & Beauty",
+  "Fashion",
+  "Home & Living",
+  "Sports & Fitness",
+  "Books",
+  "Beauty & Personal Care",
   "Toys & Games",
   "Food & Beverages",
-  "Automotive",
-  "Other",
 ];
 
 export default function AddEditProduct() {

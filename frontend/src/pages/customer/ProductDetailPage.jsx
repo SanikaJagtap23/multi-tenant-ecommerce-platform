@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProductById } from "../../features/product/productSlice";
 import { addToCart } from "../../features/cart/cartSlice";
 import { fetchWishlist, toggleWishlist } from "../../features/wishlist/wishlistSlice";
-// import { openAuthModal } from "../../features/auth/authSlice";
+import { openAuthModal } from "../../features/auth/authSlice";
 import { ProductDetailSkeleton } from "../../components/common/Skeletons";
 import toast from "react-hot-toast";
 import {
