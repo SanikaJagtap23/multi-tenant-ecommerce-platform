@@ -1,5 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Toaster } from "react-hot-toast";
+import { initCart, clearCart } from "./features/cart/cartSlice";
 
 // Layout & guards
 import Navbar from "./components/common/Navbar";
@@ -18,6 +21,8 @@ import CheckoutPage from "./pages/customer/CheckoutPage";
 import OrderConfirmationPage from "./pages/customer/OrderConfirmationPage";
 import MyOrdersPage from "./pages/customer/MyOrdersPage";
 import WishlistPage from "./pages/customer/WishlistPage";
+import PaymentPage from "./pages/customer/PaymentPage";
+import PaymentResultPage from "./pages/customer/PaymentResultPage";
 
 // Profile (all roles)
 import ProfilePage from "./pages/ProfilePage";
@@ -39,10 +44,27 @@ import AdminAnalyticsPage from "./pages/admin/AdminAnalyticsPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
 
+// Loads/clears the correct cart whenever the logged-in user changes
+function CartInitializer() {
+  const dispatch  = useDispatch();
+  const { userInfo } = useSelector((s) => s.auth);
+
+  useEffect(() => {
+    if (userInfo?._id) {
+      dispatch(initCart({ userId: userInfo._id }));
+    } else {
+      dispatch(clearCart());
+    }
+  }, [userInfo?._id, dispatch]);
+
+  return null;
+}
+
 export default function App() {
   return (
     <Router>
       <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
+      <CartInitializer />
       <AuthModal />
       <Navbar />
 
@@ -69,6 +91,8 @@ export default function App() {
         {/* Customer-only routes */}
         <Route element={<ProtectedRoute allowedRoles={["customer"]} />}>
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/payment/result" element={<PaymentResultPage />} />
           <Route path="/order-confirmation/:id" element={<OrderConfirmationPage />} />
           <Route path="/my-orders" element={<MyOrdersPage />} />
           <Route path="/wishlist" element={<WishlistPage />} />

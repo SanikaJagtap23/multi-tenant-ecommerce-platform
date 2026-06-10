@@ -20,7 +20,7 @@ const orderSchema = new mongoose.Schema(
     totalAmount: { type: Number, required: true },
     status: {
       type: String,
-      enum: ["pending", "confirmed", "shipped", "delivered", "cancelled"],
+      enum: ["payment_pending", "payment_failed", "pending", "confirmed", "shipped", "delivered", "cancelled"],
       default: "pending",
     },
     shippingAddress: {
@@ -35,12 +35,12 @@ const orderSchema = new mongoose.Schema(
     },
     paymentStatus: {
       type: String,
-      enum: ["unpaid", "paid", "refunded"],
+      enum: ["unpaid", "paid", "failed", "refunded"],
       default: "unpaid",
     },
     paymentMethod: {
       type: String,
-      enum: ["stripe", "cod"],
+      enum: ["cod", "card", "upi", "netbanking", "wallet"],
       default: "cod",
     },
     stripePaymentId: { type: String, default: "" },

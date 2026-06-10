@@ -7,9 +7,11 @@ import { FiPackage, FiChevronDown, FiChevronUp, FiUser, FiMapPin } from "react-i
 import "./VendorOrdersPage.css";
 
 const NEXT_STATUSES = {
-  pending: ["confirmed", "cancelled"],
+  payment_pending: [],
+  payment_failed:  [],
+  pending:   ["confirmed", "cancelled"],
   confirmed: ["shipped", "cancelled"],
-  shipped: ["delivered"],
+  shipped:   ["delivered"],
   delivered: [],
   cancelled: [],
 };
@@ -47,7 +49,7 @@ export default function VendorOrdersPage() {
       </div>
 
       <div className="filter-tabs">
-        {["all", "pending", "confirmed", "shipped", "delivered", "cancelled"].map((s) => (
+        {["all", "payment_pending", "pending", "confirmed", "shipped", "delivered", "cancelled", "payment_failed"].map((s) => (
           <button
             key={s}
             onClick={() => setFilter(s)}
@@ -102,13 +104,19 @@ export default function VendorOrdersPage() {
                       ₹{order.totalAmount?.toLocaleString()}
                     </span>
                     <span className={
-                      order.paymentStatus === "paid" || (order.paymentMethod === "cod" && order.status === "delivered")
+                      order.paymentStatus === "paid"
                         ? "vorder-card__payment-status--paid"
+                        : order.paymentStatus === "failed"
+                        ? "vorder-card__payment-status--failed"
                         : "vorder-card__payment-status--cod"
                     }>
-                      {order.paymentStatus === "paid" || (order.paymentMethod === "cod" && order.status === "delivered")
-                        ? "✓ COD Collected"
-                        : "⏳ COD (Pending)"}
+                      {order.paymentStatus === "paid"
+                        ? `✓ Paid (${order.paymentMethod?.toUpperCase()})`
+                        : order.paymentStatus === "failed"
+                        ? "✗ Payment Failed"
+                        : order.paymentMethod === "cod"
+                        ? "⏳ COD (Pending)"
+                        : "⏳ Awaiting Payment"}
                     </span>
                   </div>
                 </div>

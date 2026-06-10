@@ -3,33 +3,76 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { clearCart, groupByStore, calcStoreTotals } from "../../features/cart/cartSlice";
 import { clearOrderState } from "../../features/order/orderSlice";
+import { createPaymentIntent } from "../../features/payment/paymentSlice";
 import { fetchAddresses } from "../../features/auth/authSlice";
 import axiosInstance from "../../api/axiosInstance";
 import Spinner from "../../components/common/Spinner";
 import toast from "react-hot-toast";
-import { FiMapPin, FiCreditCard, FiTruck, FiPackage, FiCheck, FiChevronDown } from "react-icons/fi";
+import {
+  FiMapPin, FiCreditCard, FiTruck, FiPackage, FiCheck,
+  FiChevronDown, FiSmartphone, FiDatabase, FiGlobe,
+} from "react-icons/fi";
 import "./CheckoutPage.css";
 
 const STEPS = ["Address", "Payment", "Review"];
+
+const PAYMENT_METHODS = [
+  {
+    id: "cod",
+    label: "Cash on Delivery",
+    sub: "Pay when your order arrives",
+    icon: FiTruck,
+    badge: null,
+  },
+  {
+    id: "card",
+    label: "Credit / Debit Card",
+    sub: "Visa, Mastercard, RuPay",
+    icon: FiCreditCard,
+    badge: "Secure",
+  },
+  {
+    id: "upi",
+    label: "UPI",
+    sub: "GPay, PhonePe, Paytm, BHIM",
+    icon: FiSmartphone,
+    badge: "Instant",
+  },
+  {
+    id: "netbanking",
+    label: "Net Banking",
+    sub: "All major banks supported",
+    icon: FiDatabase,
+    badge: null,
+  },
+  {
+    id: "wallet",
+    label: "Wallet",
+    sub: "Paytm, Amazon Pay, Mobikwik",
+    icon: FiGlobe,
+    badge: null,
+  },
+];
 
 export default function CheckoutPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { items, subtotal, tax, shipping, total } = useSelector((s) => s.cart);
   const { userInfo, addresses } = useSelector((s) => s.auth);
+  const { loading: paymentLoading } = useSelector((s) => s.payment);
 
   const [step, setStep] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [placing, setPlacing] = useState(false);
   const [address, setAddress] = useState({
-    fullName: userInfo?.name || "",
-    email:    userInfo?.email || "",
-    phone:    "",
-    street:   "",
-    city:     "",
-    state:    "",
+    fullName:   userInfo?.name  || "",
+    email:      userInfo?.email || "",
+    phone:      "",
+    street:     "",
+    city:       "",
+    state:      "",
     postalCode: "",
-    country:  "India",
+    country:    "India",
   });
 
   const storeGroups = Object.values(groupByStore(items));
@@ -39,7 +82,6 @@ export default function CheckoutPage() {
     dispatch(fetchAddresses());
   }, [dispatch]);
 
-  // Redirect if cart empty
   useEffect(() => {
     if (items.length === 0) navigate("/cart");
   }, [items, navigate]);
@@ -60,39 +102,72 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (!validateAddress()) { setStep(0); return; }
-    setPlacing(true);
 
-    const failed = [];
-
-    for (const group of storeGroups) {
-      try {
-        await axiosInstance.post("/orders", {
-          items: group.items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
-          storeId: group.storeId,
-          shippingAddress: address,
-          paymentMethod,
-          notes: "",
-        });
-      } catch (err) {
-        failed.push(group.storeName || group.storeId);
-      }
+    const missingStore = storeGroups.some((g) => !g.storeId);
+    if (missingStore) {
+      toast.error("Some cart items are missing store info. Please remove and re-add them.");
+      return;
     }
 
-    setPlacing(false);
+    setPlacing(true);
 
-    if (failed.length === 0) {
-      dispatch(clearCart());
-      toast.success(
-        storeGroups.length > 1
-          ? `🎉 ${storeGroups.length} orders placed successfully!`
-          : "🎉 Order placed successfully!"
-      );
-      navigate("/my-orders");
-    } else {
-      toast.error(`Orders failed for: ${failed.join(", ")}. Please try again.`);
+    // ── COD flow ──────────────────────────────────────────────────────────────
+    if (paymentMethod === "cod") {
+      const failed = [];
+      for (const group of storeGroups) {
+        try {
+          await axiosInstance.post("/orders", {
+            items: group.items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
+            storeId: group.storeId,
+            shippingAddress: address,
+            paymentMethod: "cod",
+            notes: "",
+          });
+        } catch {
+          failed.push(group.storeName || group.storeId);
+        }
+      }
+
+      setPlacing(false);
+
+      if (failed.length === 0) {
+        dispatch(clearCart());
+        toast.success("Order placed successfully!");
+        navigate("/my-orders");
+      } else {
+        toast.error(`Orders failed for: ${failed.join(", ")}. Please try again.`);
+      }
+      return;
+    }
+
+    // ── Online payment flow ───────────────────────────────────────────────────
+    try {
+      const result = await dispatch(
+        createPaymentIntent({
+          storeGroups: storeGroups.map((g) => ({
+            storeId: g.storeId,
+            items: g.items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
+          })),
+          shippingAddress: address,
+          paymentMethod,
+        })
+      ).unwrap();
+
+      navigate("/payment", {
+        state: {
+          intentId:     result.intentId,
+          total:        result.total,
+          paymentMethod,
+        },
+      });
+    } catch (err) {
+      toast.error(err || "Failed to initialise payment. Please try again.");
+    } finally {
+      setPlacing(false);
     }
   };
 
+  const isBusy = placing || paymentLoading;
   const stepIcons = [FiMapPin, FiCreditCard, FiCheck];
 
   return (
@@ -126,17 +201,16 @@ export default function CheckoutPage() {
         </div>
 
         <div className="checkout-layout">
-          {/* Main content */}
           <div className="checkout-main">
-            {/* STEP 0 — Address */}
+
+            {/* ── STEP 0: Address ─────────────────────────────────────────── */}
             {step === 0 && (
               <div className="checkout-section">
                 <h2 className="checkout-section-title">
                   <FiMapPin className="checkout-section-title__icon" /> Shipping Address
                 </h2>
 
-                {/* Saved address picker */}
-                {addresses && addresses.length > 0 && (
+                {addresses?.length > 0 && (
                   <div className="checkout-saved-addrs">
                     <p className="checkout-saved-addrs__label">
                       <FiChevronDown size={13} /> Use a saved address
@@ -149,8 +223,8 @@ export default function CheckoutPage() {
                           className="checkout-saved-addr-btn"
                           onClick={() => setAddress({
                             fullName:   addr.fullName,
-                            email:      addr.email   || userInfo?.email || "",
-                            phone:      addr.phone   || "",
+                            email:      addr.email || userInfo?.email || "",
+                            phone:      addr.phone || "",
                             street:     addr.street,
                             city:       addr.city,
                             state:      addr.state,
@@ -168,19 +242,17 @@ export default function CheckoutPage() {
 
                 <div className="checkout-address-grid">
                   {[
-                    { name: "fullName",   label: "Full Name",      placeholder: "Full name",         col: 2 },
-                    { name: "email",      label: "Email",          placeholder: "Email address",     type: "email" },
+                    { name: "fullName",   label: "Full Name",      placeholder: "Full name",     col: 2 },
+                    { name: "email",      label: "Email",          placeholder: "Email address", type: "email" },
                     { name: "phone",      label: "Phone Number",   placeholder: "Phone number" },
-                    { name: "street",     label: "Street Address", placeholder: "Street address",    col: 2 },
+                    { name: "street",     label: "Street Address", placeholder: "Street address", col: 2 },
                     { name: "city",       label: "City",           placeholder: "City" },
                     { name: "state",      label: "State",          placeholder: "State" },
                     { name: "postalCode", label: "Postal Code",    placeholder: "PIN code" },
                     { name: "country",    label: "Country",        placeholder: "Country" },
                   ].map(({ name, label, placeholder, type = "text", col }) => (
                     <div key={name} className={`checkout-address-field${col === 2 ? " checkout-address-field--full" : ""}`}>
-                      <label>
-                        {label} <span>*</span>
-                      </label>
+                      <label>{label} <span>*</span></label>
                       <input
                         type={type}
                         name={name}
@@ -191,6 +263,7 @@ export default function CheckoutPage() {
                     </div>
                   ))}
                 </div>
+
                 <div className="checkout-actions">
                   <button
                     onClick={() => validateAddress() && setStep(1)}
@@ -203,65 +276,61 @@ export default function CheckoutPage() {
               </div>
             )}
 
-            {/* STEP 1 — Payment */}
+            {/* ── STEP 1: Payment ─────────────────────────────────────────── */}
             {step === 1 && (
               <div className="checkout-section">
                 <h2 className="checkout-section-title">
                   <FiCreditCard className="checkout-section-title__icon" /> Payment Method
                 </h2>
-                <div className="checkout-payment-list">
-                  {[
-                    {
-                      value: "cod",
-                      icon: FiTruck,
-                      label: "Cash on Delivery",
-                      sub: "Pay when your order arrives at your door",
-                    },
-                    {
-                      value: "stripe",
-                      icon: FiCreditCard,
-                      label: "Pay Online (Stripe)",
-                      sub: "Credit / Debit card — 100% secure",
-                    },
-                  ].map(({ value, icon: Icon, label, sub }) => (
+
+                <div className="checkout-payment-grid">
+                  {PAYMENT_METHODS.map(({ id, label, sub, icon: Icon, badge }) => (
                     <label
-                      key={value}
-                      className={`checkout-payment-option${paymentMethod === value ? " checkout-payment-option--selected" : ""}`}
+                      key={id}
+                      className={`checkout-pay-option${paymentMethod === id ? " checkout-pay-option--selected" : ""}`}
                     >
                       <input
                         type="radio"
                         name="payment"
-                        value={value}
-                        checked={paymentMethod === value}
-                        onChange={() => setPaymentMethod(value)}
+                        value={id}
+                        checked={paymentMethod === id}
+                        onChange={() => setPaymentMethod(id)}
                       />
-                      <Icon className="checkout-payment-icon" size={22} />
-                      <div>
-                        <p className="checkout-payment-label">{label}</p>
-                        <p className="checkout-payment-sub">{sub}</p>
+                      <div className="checkout-pay-option__icon-wrap">
+                        <Icon size={22} />
                       </div>
+                      <div className="checkout-pay-option__body">
+                        <span className="checkout-pay-option__label">
+                          {label}
+                          {badge && <span className="checkout-pay-option__badge">{badge}</span>}
+                        </span>
+                        <span className="checkout-pay-option__sub">{sub}</span>
+                      </div>
+                      <div className={`checkout-pay-option__dot${paymentMethod === id ? " checkout-pay-option__dot--on" : ""}`} />
                     </label>
                   ))}
                 </div>
+
+                {paymentMethod !== "cod" && (
+                  <p className="checkout-pay-stripe-note">
+                    🔒 Powered by Stripe — your card/UPI details are never stored on our servers.
+                  </p>
+                )}
+
                 <div className="checkout-actions">
-                  <button onClick={() => setStep(0)} className="checkout-actions__back">
-                    ← Back
-                  </button>
-                  <button onClick={() => setStep(2)} className="checkout-actions__next">
-                    Review Order →
-                  </button>
+                  <button onClick={() => setStep(0)} className="checkout-actions__back">← Back</button>
+                  <button onClick={() => setStep(2)} className="checkout-actions__next">Review Order →</button>
                 </div>
               </div>
             )}
 
-            {/* STEP 2 — Review */}
+            {/* ── STEP 2: Review ──────────────────────────────────────────── */}
             {step === 2 && (
               <div className="checkout-section">
                 <h2 className="checkout-section-title">
                   <FiCheck className="checkout-section-title__icon" /> Review Your Order
                 </h2>
 
-                {/* Address review */}
                 <div className="checkout-review-block">
                   <div className="checkout-review-block__header">
                     <p className="checkout-review-block__label">Delivering to</p>
@@ -272,18 +341,20 @@ export default function CheckoutPage() {
                   <p className="checkout-review-block__detail">{address.phone}</p>
                 </div>
 
-                {/* Payment review */}
                 <div className="checkout-review-block">
                   <div className="checkout-review-block__header">
                     <p className="checkout-review-block__label">Payment</p>
                     <button onClick={() => setStep(1)} className="checkout-review-block__edit">Edit</button>
                   </div>
                   <p className="checkout-review-block__payment-val">
-                    {paymentMethod === "cod" ? "💵 Cash on Delivery" : "💳 Stripe (Card)"}
+                    {paymentMethod === "cod"        && "💵 Cash on Delivery"}
+                    {paymentMethod === "card"       && "💳 Credit / Debit Card"}
+                    {paymentMethod === "upi"        && "📱 UPI"}
+                    {paymentMethod === "netbanking" && "🏦 Net Banking"}
+                    {paymentMethod === "wallet"     && "👛 Wallet"}
                   </p>
                 </div>
 
-                {/* Items grouped by store */}
                 <div className="checkout-review-section">
                   {storeGroups.map((group) => {
                     const t = calcStoreTotals(group.items);
@@ -300,13 +371,10 @@ export default function CheckoutPage() {
                           {group.items.map((item) => (
                             <li key={item.productId} className="checkout-item-row">
                               <div className="checkout-item-image">
-                                {item.image ? (
-                                  <img src={item.image} alt={item.name} />
-                                ) : (
-                                  <div className="checkout-item-image__placeholder">
-                                    <FiPackage size={14} />
-                                  </div>
-                                )}
+                                {item.image
+                                  ? <img src={item.image} alt={item.name} />
+                                  : <div className="checkout-item-image__placeholder"><FiPackage size={14} /></div>
+                                }
                               </div>
                               <div className="checkout-item-info">
                                 <p className="checkout-item-info__name">{item.name}</p>
@@ -328,22 +396,24 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="checkout-actions">
-                  <button onClick={() => setStep(1)} disabled={placing} className="checkout-actions__back">
+                  <button onClick={() => setStep(1)} disabled={isBusy} className="checkout-actions__back">
                     ← Back
                   </button>
-                  <button
-                    onClick={handlePlaceOrder}
-                    disabled={placing}
-                    className="checkout-actions__place"
-                  >
-                    {placing ? <><Spinner size="sm" /> Placing...</> : `Place ${storeGroups.length > 1 ? `${storeGroups.length} Orders` : "Order"}`}
+                  <button onClick={handlePlaceOrder} disabled={isBusy} className="checkout-actions__place">
+                    {isBusy
+                      ? <><Spinner size="sm" /> {paymentMethod === "cod" ? "Placing..." : "Preparing..."}</>
+                      : paymentMethod === "cod"
+                        ? `Place ${storeGroups.length > 1 ? `${storeGroups.length} Orders` : "Order"}`
+                        : `Proceed to Pay ₹${total.toLocaleString()}`
+                    }
                   </button>
                 </div>
               </div>
             )}
+
           </div>
 
-          {/* Summary sidebar */}
+          {/* Sidebar */}
           <div className="checkout-sidebar">
             <div className="checkout-sidebar__card">
               <h3 className="checkout-sidebar__title">Price Details</h3>
@@ -388,6 +458,7 @@ export default function CheckoutPage() {
               )}
             </div>
           </div>
+
         </div>
       </div>
     </div>

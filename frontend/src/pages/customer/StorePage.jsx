@@ -67,7 +67,7 @@ export default function StorePage() {
     if (!product || product.stock === 0) return;
     const cartQty = cartItems.find((i) => i.productId === product._id)?.quantity || 0;
     if (cartQty >= product.stock) { toast.error("No more stock available."); return; }
-    dispatch(addToCart({ productId: product._id, name: product.name, price: product.price, image: product.images?.[0] || "", stock: product.stock, quantity: 1 }));
+    dispatch(addToCart({ productId: product._id, name: product.name, price: product.price, image: product.images?.[0] || "", stock: product.stock, storeId: id, storeName: store?.name || "", vendorId: store?.owner?._id || store?.owner || "" }));
     toast.success("Added to cart!");
   };
 

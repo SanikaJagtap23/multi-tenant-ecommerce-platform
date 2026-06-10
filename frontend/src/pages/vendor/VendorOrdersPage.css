@@ -122,6 +122,12 @@
   color: var(--clr-amber);
 }
 
+.vorder-card__payment-status--failed {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--clr-red, #ef4444);
+}
+
 .vorder-card__preview-images {
   display: flex;
   align-items: center;

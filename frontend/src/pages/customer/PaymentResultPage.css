@@ -1,0 +1,133 @@
+.prp-loading {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: var(--clr-text-500);
+  font-size: 0.9375rem;
+}
+
+.prp {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: var(--clr-bg);
+}
+
+.prp-card {
+  background: #fff;
+  border: 1px solid var(--clr-border);
+  border-radius: 1.25rem;
+  padding: 2.5rem 2rem;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.prp-card--success { border-top: 4px solid #22c55e; }
+.prp-card--failed  { border-top: 4px solid #ef4444; }
+
+.prp-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+.prp-icon--success { color: #22c55e; }
+.prp-icon--failed  { color: #ef4444; }
+
+.prp-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--clr-text-900);
+  margin: 0;
+}
+
+.prp-sub {
+  font-size: 0.9375rem;
+  color: var(--clr-text-500);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Orders list */
+.prp-orders {
+  width: 100%;
+  border: 1px solid var(--clr-border);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.prp-order-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--clr-border);
+  font-size: 0.875rem;
+}
+.prp-order-row:last-child { border-bottom: none; }
+
+.prp-order-row__left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--clr-text-700);
+}
+
+.prp-order-id {
+  font-size: 0.75rem;
+  color: var(--clr-text-400);
+  font-family: monospace;
+}
+
+.prp-order-amount {
+  font-weight: 700;
+  color: var(--clr-text-900);
+}
+
+/* Action buttons */
+.prp-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.prp-btn {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  transition: opacity 0.15s;
+}
+.prp-btn:hover { opacity: 0.88; }
+
+.prp-btn--primary {
+  background: var(--clr-primary);
+  color: #fff;
+}
+
+.prp-btn--danger {
+  background: #ef4444;
+  color: #fff;
+}
+
+.prp-btn--ghost {
+  background: transparent;
+  color: var(--clr-text-600);
+  border: 1px solid var(--clr-border);
+}
