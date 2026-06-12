@@ -33,6 +33,7 @@ import ManageStore from "./pages/vendor/ManageStore";
 import ManageProducts from "./pages/vendor/ManageProducts";
 import AddEditProduct from "./pages/vendor/AddEditProduct";
 import VendorOrdersPage from "./pages/vendor/VendorOrdersPage";
+import VendorOrderDetailPage from "./pages/vendor/VendorOrderDetailPage";
 import VendorAnalyticsPage from "./pages/vendor/VendorAnalyticsPage";
 import StockManagementPage from "./pages/vendor/StockManagementPage";
 
@@ -107,6 +108,7 @@ export default function App() {
             <Route path="/vendor/products/new" element={<AddEditProduct />} />
             <Route path="/vendor/products/edit/:id" element={<AddEditProduct />} />
             <Route path="/vendor/orders" element={<VendorOrdersPage />} />
+            <Route path="/vendor/orders/:id" element={<VendorOrderDetailPage />} />
             <Route path="/vendor/analytics" element={<VendorAnalyticsPage />} />
             <Route path="/vendor/stock" element={<StockManagementPage />} />
           </Route>

@@ -1,53 +1,175 @@
-/* VendorSidebar.css */
-
-.vendor-sidebar {
-  width: 13rem;
-  flex-shrink: 0;
-  border-right: 1px solid var(--clr-border);
-  background: #fff;
+.vsidebar {
+  width: 15rem;
   min-height: 100vh;
-  padding: 1.5rem 0.75rem;
-}
-
-.vendor-sidebar__heading {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--clr-text-400);
-  text-transform: uppercase;
-  padding: 0 0.75rem;
-  margin-bottom: 0.75rem;
-}
-
-.vendor-sidebar__nav {
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  flex-shrink: 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.vendor-sidebar__link {
+/* Brand */
+.vsidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.375rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.vsidebar__brand-icon {
+  width: 2.125rem;
+  height: 2.125rem;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.vsidebar__brand-text {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  letter-spacing: -0.01em;
+}
+
+/* Nav */
+.vsidebar__nav {
+  flex: 1;
+  padding: 1.25rem 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  overflow-y: auto;
+}
+
+.vsidebar__section-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #475569;
+  padding: 0 0.625rem;
+  margin-bottom: 0.5rem;
+}
+
+.vsidebar__link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  color: #94a3b8;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background 0.15s ease, color 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.vsidebar__link:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #e2e8f0;
+}
+
+.vsidebar__link--active {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.22), rgba(139, 92, 246, 0.12));
+  color: #a5b4fc;
+  border-color: rgba(99, 102, 241, 0.25);
+}
+
+.vsidebar__link--active:hover {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.28), rgba(139, 92, 246, 0.18));
+  color: #c7d2fe;
+}
+
+.vsidebar__link-icon {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.vsidebar__link--active .vsidebar__link-icon {
+  opacity: 1;
+}
+
+.vsidebar__link-label {
+  line-height: 1;
+}
+
+/* Footer */
+.vsidebar__footer {
+  padding: 1rem 0.875rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: var(--radius-sm);
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--clr-text-600);
-  text-decoration: none;
+}
+
+.vsidebar__user {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.vsidebar__avatar {
+  width: 1.875rem;
+  height: 1.875rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.vsidebar__user-info {
+  min-width: 0;
+}
+
+.vsidebar__user-name {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.vsidebar__user-role {
+  font-size: 0.6875rem;
+  color: #475569;
+  line-height: 1.2;
+  margin-top: 0.125rem;
+}
+
+.vsidebar__logout-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem;
+  border-radius: 0.375rem;
   transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
 }
 
-.vendor-sidebar__link:hover {
-  background: var(--clr-border-light);
-  color: var(--clr-text-900);
-}
-
-.vendor-sidebar__link--active {
-  background: var(--clr-primary-light);
-  color: #4338ca;
-}
-
-.vendor-sidebar__link--active:hover {
-  background: var(--clr-primary-light);
-  color: #4338ca;
+.vsidebar__logout-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
 }

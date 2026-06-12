@@ -1,7 +1,9 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../features/auth/authSlice";
 import {
   FiGrid, FiPackage, FiPlusCircle, FiShoppingBag,
-  FiShoppingCart, FiTrendingUp, FiBarChart2
+  FiShoppingCart, FiTrendingUp, FiBarChart2, FiLogOut,
 } from "react-icons/fi";
 import "./VendorSidebar.css";
 
@@ -16,25 +18,57 @@ const links = [
 ];
 
 export default function VendorSidebar() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { userInfo } = useSelector((s) => s.auth);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  };
+
+  const initials = userInfo?.name
+    ? userInfo.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
+    : "V";
+
   return (
-    <aside className="vendor-sidebar">
-      <p className="vendor-sidebar__heading">Vendor Panel</p>
-      <nav className="vendor-sidebar__nav">
+    <aside className="vsidebar">
+      <div className="vsidebar__brand">
+        <div className="vsidebar__brand-icon">
+          <FiShoppingBag size={18} />
+        </div>
+        <span className="vsidebar__brand-text">Vendor Panel</span>
+      </div>
+
+      <nav className="vsidebar__nav">
+        <p className="vsidebar__section-label">Menu</p>
         {links.map(({ to, icon, label, end }) => (
           <NavLink
             key={to}
             to={to}
             end={end}
             className={({ isActive }) =>
-              isActive
-                ? "vendor-sidebar__link vendor-sidebar__link--active"
-                : "vendor-sidebar__link"
+              `vsidebar__link${isActive ? " vsidebar__link--active" : ""}`
             }
           >
-            {icon} {label}
+            <span className="vsidebar__link-icon">{icon}</span>
+            <span className="vsidebar__link-label">{label}</span>
           </NavLink>
         ))}
       </nav>
+
+      <div className="vsidebar__footer">
+        <div className="vsidebar__user">
+          <div className="vsidebar__avatar">{initials}</div>
+          <div className="vsidebar__user-info">
+            <p className="vsidebar__user-name">{userInfo?.name || "Vendor"}</p>
+            <p className="vsidebar__user-role">Vendor Account</p>
+          </div>
+        </div>
+        <button onClick={handleLogout} className="vsidebar__logout-btn" title="Logout">
+          <FiLogOut size={16} />
+        </button>
+      </div>
     </aside>
   );
 }
