@@ -140,30 +140,6 @@ const updatePassword = asyncHandler(async (req, res) => {
   res.json({ success: true, message: "Password updated successfully" });
 });
 
-// @desc    Get all users (Super Admin only)
-// @route   GET /api/auth/users
-// @access  Private/SuperAdmin
-const getAllUsers = asyncHandler(async (req, res) => {
-  const users = await User.find({}).select("-password").sort({ createdAt: -1 });
-  res.json({ success: true, count: users.length, data: users });
-});
-
-// @desc    Update user active status (Super Admin only)
-// @route   PUT /api/auth/users/:id/status
-// @access  Private/SuperAdmin
-const updateUserStatus = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
-  if (!user) {
-    res.status(404);
-    throw new Error("User not found");
-  }
-
-  user.isActive = req.body.isActive;
-  await user.save();
-
-  res.json({ success: true, message: "User status updated", data: user });
-});
-
 // ─── ADDRESSES ───────────────────────────────────────────────────────────────
 
 // GET /api/auth/addresses
@@ -234,4 +210,4 @@ const deleteAddress = asyncHandler(async (req, res) => {
   res.json({ success: true, data: user.addresses });
 });
 
-module.exports = { registerUser, loginUser, getMe, updateProfile, updatePassword, getAllUsers, updateUserStatus, getAddresses, addAddress, updateAddress, deleteAddress };
+module.exports = { registerUser, loginUser, getMe, updateProfile, updatePassword, getAddresses, addAddress, updateAddress, deleteAddress };

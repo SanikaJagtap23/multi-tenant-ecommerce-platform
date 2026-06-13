@@ -6,8 +6,6 @@ const {
   getMe,
   updateProfile,
   updatePassword,
-  getAllUsers,
-  updateUserStatus,
   getAddresses,
   addAddress,
   updateAddress,
@@ -21,9 +19,6 @@ router.post("/login", loginUser);
 router.get("/me", protect, getMe);
 router.put("/profile", protect, updateProfile);
 router.put("/password", protect, updatePassword);
-router.get("/users", protect, authorize("superadmin"), getAllUsers);
-router.put("/users/:id/status", protect, authorize("superadmin"), updateUserStatus);
-
 // Address routes (customer)
 router.get("/addresses", protect, getAddresses);
 router.post("/addresses", protect, addAddress);

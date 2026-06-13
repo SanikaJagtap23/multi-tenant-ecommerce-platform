@@ -1,0 +1,346 @@
+.aorders { max-width: 1100px; }
+
+.aorders__header {
+  margin-bottom: 1.5rem;
+}
+
+.aorders__title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--clr-text-900);
+  letter-spacing: -0.02em;
+}
+
+.aorders__subtitle {
+  font-size: 0.875rem;
+  color: var(--clr-text-400);
+  margin-top: 0.25rem;
+}
+
+/* Status Tabs */
+.aorders__tabs {
+  display: flex;
+  gap: 0.25rem;
+  background: var(--clr-bg-white);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-sm);
+  padding: 0.3125rem;
+  margin-bottom: 1.25rem;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+}
+
+.aorders__tab {
+  padding: 0.4375rem 0.875rem;
+  border-radius: 0.375rem;
+  border: none;
+  background: none;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--clr-text-500);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.aorders__tab:hover { background: var(--clr-bg); color: var(--clr-text-900); }
+.aorders__tab--active { background: var(--clr-primary); color: #fff; font-weight: 600; }
+.aorders__tab--active:hover { background: var(--clr-primary-hover); }
+
+.aorders__spinner { display: flex; justify-content: center; padding: 4rem; }
+
+.aorders__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 4rem 2rem;
+  color: var(--clr-text-300);
+  background: var(--clr-bg-white);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+}
+
+.aorders__empty p { font-size: 0.9375rem; color: var(--clr-text-400); }
+
+/* Table */
+.aorders__table-wrap {
+  background: var(--clr-bg-white);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  overflow-x: auto;
+}
+
+.aorders__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.aorders__table thead { background: var(--clr-bg-subtle); }
+
+.aorders__table th {
+  text-align: left;
+  padding: 0.75rem 1.125rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--clr-text-400);
+  border-bottom: 1px solid var(--clr-border);
+  white-space: nowrap;
+}
+
+.aorders__table td {
+  padding: 0.875rem 1.125rem;
+  border-bottom: 1px solid var(--clr-border-light);
+  vertical-align: middle;
+}
+
+.aorders__table tbody tr:last-child td { border-bottom: none; }
+.aorders__table tbody tr:hover { background: var(--clr-bg-subtle); }
+
+.aorders__id {
+  font-family: monospace;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--clr-text-600);
+  background: var(--clr-bg);
+  padding: 0.1875rem 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--clr-border);
+}
+
+.aorders__cname  { font-weight: 600; color: var(--clr-text-900); font-size: 0.875rem; }
+.aorders__cemail { font-size: 0.75rem; color: var(--clr-text-400); margin-top: 0.1rem; }
+
+.aorders__store {
+  font-size: 0.875rem;
+  color: var(--clr-text-700);
+  font-weight: 500;
+}
+
+.aorders__amount {
+  font-weight: 700;
+  color: var(--clr-text-900);
+  font-size: 0.9375rem;
+}
+
+.aorders__pay-badge,
+.aorders__status-badge {
+  display: inline-block;
+  padding: 0.1875rem 0.625rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: capitalize;
+}
+
+.aorders__date {
+  color: var(--clr-text-400);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+/* Pagination */
+.aorders__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.aorders__page-btn {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--clr-border);
+  background: var(--clr-bg-white);
+  color: var(--clr-text-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.aorders__page-btn:hover:not(:disabled) { border-color: var(--clr-primary); color: var(--clr-primary); }
+.aorders__page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.aorders__page-info { font-size: 0.875rem; color: var(--clr-text-400); }
+.aorders { max-width: 1100px; }
+
+.aorders__header {
+  margin-bottom: 1.5rem;
+}
+
+.aorders__title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--clr-text-900);
+  letter-spacing: -0.02em;
+}
+
+.aorders__subtitle {
+  font-size: 0.875rem;
+  color: var(--clr-text-400);
+  margin-top: 0.25rem;
+}
+
+/* Status Tabs */
+.aorders__tabs {
+  display: flex;
+  gap: 0.25rem;
+  background: var(--clr-bg-white);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-sm);
+  padding: 0.3125rem;
+  margin-bottom: 1.25rem;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+}
+
+.aorders__tab {
+  padding: 0.4375rem 0.875rem;
+  border-radius: 0.375rem;
+  border: none;
+  background: none;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--clr-text-500);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.aorders__tab:hover { background: var(--clr-bg); color: var(--clr-text-900); }
+.aorders__tab--active { background: var(--clr-primary); color: #fff; font-weight: 600; }
+.aorders__tab--active:hover { background: var(--clr-primary-hover); }
+
+.aorders__spinner { display: flex; justify-content: center; padding: 4rem; }
+
+.aorders__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 4rem 2rem;
+  color: var(--clr-text-300);
+  background: var(--clr-bg-white);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+}
+
+.aorders__empty p { font-size: 0.9375rem; color: var(--clr-text-400); }
+
+/* Table */
+.aorders__table-wrap {
+  background: var(--clr-bg-white);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  overflow-x: auto;
+}
+
+.aorders__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.aorders__table thead { background: var(--clr-bg-subtle); }
+
+.aorders__table th {
+  text-align: left;
+  padding: 0.75rem 1.125rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--clr-text-400);
+  border-bottom: 1px solid var(--clr-border);
+  white-space: nowrap;
+}
+
+.aorders__table td {
+  padding: 0.875rem 1.125rem;
+  border-bottom: 1px solid var(--clr-border-light);
+  vertical-align: middle;
+}
+
+.aorders__table tbody tr:last-child td { border-bottom: none; }
+.aorders__table tbody tr:hover { background: var(--clr-bg-subtle); }
+
+.aorders__id {
+  font-family: monospace;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--clr-text-600);
+  background: var(--clr-bg);
+  padding: 0.1875rem 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--clr-border);
+}
+
+.aorders__cname  { font-weight: 600; color: var(--clr-text-900); font-size: 0.875rem; }
+.aorders__cemail { font-size: 0.75rem; color: var(--clr-text-400); margin-top: 0.1rem; }
+
+.aorders__store {
+  font-size: 0.875rem;
+  color: var(--clr-text-700);
+  font-weight: 500;
+}
+
+.aorders__amount {
+  font-weight: 700;
+  color: var(--clr-text-900);
+  font-size: 0.9375rem;
+}
+
+.aorders__pay-badge,
+.aorders__status-badge {
+  display: inline-block;
+  padding: 0.1875rem 0.625rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: capitalize;
+}
+
+.aorders__date {
+  color: var(--clr-text-400);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+/* Pagination */
+.aorders__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.aorders__page-btn {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--clr-border);
+  background: var(--clr-bg-white);
+  color: var(--clr-text-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.aorders__page-btn:hover:not(:disabled) { border-color: var(--clr-primary); color: var(--clr-primary); }
+.aorders__page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.aorders__page-info { font-size: 0.875rem; color: var(--clr-text-400); }
