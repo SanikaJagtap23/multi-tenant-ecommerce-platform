@@ -52,13 +52,14 @@ export default function HomePage() {
   const [searchParams] = useSearchParams();
 
   const { userInfo } = useSelector((s) => s.auth);
-  const { products, loading } = useSelector((s) => s.product);
+  const { products, loading, totalProducts, currentPage, totalPages } = useSelector((s) => s.product);
   const { stores } = useSelector((s) => s.store);
   const { items: cartItems } = useSelector((s) => s.cart);
   const { ids: wishlistIds } = useSelector((s) => s.wishlist);
 
   const [activeCategory, setActiveCategory] = useState(searchParams.get("category") || "");
   const [hovered, setHovered] = useState(null);
+  const [page, setPage] = useState(1);
 
   // Load wishlist when customer is logged in
   useEffect(() => {
@@ -77,14 +78,24 @@ export default function HomePage() {
     }
   };
 
-  // Sync URL params → filter
+  // Sync URL params → filter; reset to page 1 when filters change
   useEffect(() => {
     const cat = searchParams.get("category") || "";
     const q   = searchParams.get("search")   || "";
     setActiveCategory(cat);
-    dispatch(fetchAllProducts({ search: q, category: cat }));
+    setPage(1);
+    dispatch(fetchAllProducts({ search: q, category: cat, page: 1 }));
     dispatch(fetchAllStores());
   }, [dispatch, searchParams]);
+
+  // Re-fetch when page changes (but not when filters change — that's handled above)
+  useEffect(() => {
+    if (page === 1) return; // already fetched on filter change
+    const cat = searchParams.get("category") || "";
+    const q   = searchParams.get("search")   || "";
+    dispatch(fetchAllProducts({ search: q, category: cat, page }));
+    document.getElementById("products")?.scrollIntoView({ behavior: "smooth" });
+  }, [page]);
 
   const handleCategoryClick = (val) => {
     setActiveCategory(val);
@@ -110,12 +121,8 @@ export default function HomePage() {
     toast.success(`${product.name} added to cart!`);
   };
 
-  const searchQ = searchParams.get("search") || "";
-  const filtered = products.filter((p) => {
-    const matchSearch = !searchQ || p.name.toLowerCase().includes(searchQ.toLowerCase());
-    const matchCat = !activeCategory || p.category === activeCategory;
-    return matchSearch && matchCat;
-  });
+  // Server handles search + category filtering; products is the current page slice
+  const filtered = products;
 
   // One representative product per category (highest discount), used for All-mode rotation
   const heroByCategory = useMemo(() => {
@@ -334,7 +341,7 @@ export default function HomePage() {
             </h2>
             {!loading && (
               <p className="products-header__count">
-                {filtered.length} product{filtered.length !== 1 ? "s" : ""} found
+                {totalProducts} product{totalProducts !== 1 ? "s" : ""} found
               </p>
             )}
           </div>
@@ -359,6 +366,7 @@ export default function HomePage() {
             </button>
           </div>
         ) : (
+          <>
           <div className="products-grid">
             {filtered.map((product) => {
               const discount = product.comparePrice > product.price
@@ -460,6 +468,51 @@ export default function HomePage() {
               );
             })}
           </div>
+
+          {/* ── Pagination ── */}
+          {totalPages > 1 && (
+            <div className="pagination">
+              <button
+                className="pagination__btn"
+                onClick={() => setPage((p) => p - 1)}
+                disabled={currentPage <= 1}
+              >
+                ← Prev
+              </button>
+
+              <div className="pagination__pages">
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 2)
+                  .reduce((acc, p, idx, arr) => {
+                    if (idx > 0 && p - arr[idx - 1] > 1) acc.push("...");
+                    acc.push(p);
+                    return acc;
+                  }, [])
+                  .map((item, idx) =>
+                    item === "..." ? (
+                      <span key={`ellipsis-${idx}`} className="pagination__ellipsis">…</span>
+                    ) : (
+                      <button
+                        key={item}
+                        className={`pagination__page-btn${currentPage === item ? " pagination__page-btn--active" : ""}`}
+                        onClick={() => setPage(item)}
+                      >
+                        {item}
+                      </button>
+                    )
+                  )}
+              </div>
+
+              <button
+                className="pagination__btn"
+                onClick={() => setPage((p) => p + 1)}
+                disabled={currentPage >= totalPages}
+              >
+                Next →
+              </button>
+            </div>
+          )}
+          </>
         )}
       </section>
 

@@ -67,7 +67,7 @@ const getMyProducts = asyncHandler(async (req, res) => {
 // @route   GET /api/products
 // @access  Public
 const getAllProducts = asyncHandler(async (req, res) => {
-  const { category, storeId, search, minPrice, maxPrice } = req.query;
+  const { category, storeId, search, minPrice, maxPrice, page = 1, limit = 12 } = req.query;
   const filter = { isActive: true };
 
   if (category) filter.category = { $regex: category, $options: "i" };
@@ -79,11 +79,26 @@ const getAllProducts = asyncHandler(async (req, res) => {
     if (maxPrice) filter.price.$lte = Number(maxPrice);
   }
 
-  const products = await Product.find(filter)
-    .populate("store", "name category")
-    .sort({ createdAt: -1 });
+  const pageNum  = Math.max(1, Number(page));
+  const limitNum = Math.min(50, Math.max(1, Number(limit)));
+  const skip     = (pageNum - 1) * limitNum;
 
-  res.json({ success: true, count: products.length, data: products });
+  const [products, total] = await Promise.all([
+    Product.find(filter)
+      .populate("store", "name category")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limitNum),
+    Product.countDocuments(filter),
+  ]);
+
+  res.json({
+    success: true,
+    count: total,
+    page: pageNum,
+    pages: Math.ceil(total / limitNum),
+    data: products,
+  });
 });
 
 // @desc    Get single product by ID

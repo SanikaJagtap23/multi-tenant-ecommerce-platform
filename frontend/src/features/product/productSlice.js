@@ -24,7 +24,7 @@ export const fetchAllProducts = createAsyncThunk(
   async (params = {}, { rejectWithValue }) => {
     try {
       const { data } = await api.get("/products", { params });
-      return data.data;
+      return data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Failed to fetch products");
     }
@@ -87,6 +87,9 @@ const productSlice = createSlice({
   name: "product",
   initialState: {
     products: [],
+    totalProducts: 0,
+    currentPage: 1,
+    totalPages: 1,
     myProducts: [],
     selectedProduct: null,
     loading: false,
@@ -121,7 +124,10 @@ const productSlice = createSlice({
       .addCase(fetchAllProducts.pending, setLoading)
       .addCase(fetchAllProducts.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload;
+        state.products = action.payload.data;
+        state.totalProducts = action.payload.count;
+        state.currentPage = action.payload.page;
+        state.totalPages = action.payload.pages;
       })
       .addCase(fetchAllProducts.rejected, setError)
       .addCase(fetchProductById.pending, setLoading)
