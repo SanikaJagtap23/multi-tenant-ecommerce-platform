@@ -72,6 +72,7 @@ app.use("/api/products", require("./routes/productRoutes"));
 app.use("/api/orders",   require("./routes/orderRoutes"));
 app.use("/api/payments", require("./routes/paymentRoutes"));
 app.use("/api/wishlist", require("./routes/wishlistRoutes"));
+app.use("/api/coupons", require("./routes/couponRoutes"));
 
 // ─── Error handling ────────────────────────────────────────────────────────────
 app.use(notFound);

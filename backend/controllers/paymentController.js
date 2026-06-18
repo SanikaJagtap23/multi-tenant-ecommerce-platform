@@ -4,11 +4,13 @@ const Order   = require("../models/Order");
 const Product = require("../models/Product");
 const Store   = require("../models/Store");
 const Payment = require("../models/Payment");
+const Coupon  = require("../models/Coupon");
+const { calcDiscount } = require("./couponController");
 
 // ─── POST /api/payments/intent ────────────────────────────────────────────────
 // Validates cart, reserves stock, creates pending orders, returns intentId.
 const createPaymentIntent = asyncHandler(async (req, res) => {
-  const { storeGroups, shippingAddress, paymentMethod } = req.body;
+  const { storeGroups, shippingAddress, paymentMethod, couponCode } = req.body;
 
   if (!storeGroups?.length) {
     res.status(400);
@@ -52,12 +54,31 @@ const createPaymentIntent = asyncHandler(async (req, res) => {
       await product.save();
     }
 
-    const tax         = parseFloat((subtotal * 0.1).toFixed(2));
+    const tax          = parseFloat((subtotal * 0.1).toFixed(2));
     const shippingCost = subtotal >= 500 ? 0 : 49;
-    const totalAmount  = parseFloat((subtotal + tax + shippingCost).toFixed(2));
-    grandTotal        += totalAmount;
 
-    validatedGroups.push({ store, orderItems, subtotal, tax, shippingCost, totalAmount });
+    // Apply coupon if provided and valid for this store
+    let couponDiscount = 0;
+    let appliedCoupon  = null;
+    if (couponCode) {
+      const now    = new Date();
+      const coupon = await Coupon.findOne({ code: couponCode.toUpperCase().trim(), isActive: true });
+      if (
+        coupon &&
+        coupon.store.toString() === store._id.toString() &&
+        coupon.expiryDate > now &&
+        (coupon.usageLimit === null || coupon.usedCount < coupon.usageLimit) &&
+        subtotal >= coupon.minOrderAmount
+      ) {
+        couponDiscount = parseFloat(calcDiscount(coupon, subtotal).toFixed(2));
+        appliedCoupon  = coupon;
+      }
+    }
+
+    const totalAmount = parseFloat((subtotal + tax + shippingCost - couponDiscount).toFixed(2));
+    grandTotal       += totalAmount;
+
+    validatedGroups.push({ store, orderItems, subtotal, tax, shippingCost, couponDiscount, appliedCoupon, totalAmount });
   }
 
   grandTotal = parseFloat(grandTotal.toFixed(2));
@@ -79,11 +100,18 @@ const createPaymentIntent = asyncHandler(async (req, res) => {
       totalAmount:  group.totalAmount,
       shippingAddress,
       paymentMethod,
-      paymentStatus: "unpaid",
-      status:        "payment_pending",
+      paymentStatus:   "unpaid",
+      status:          "payment_pending",
       stripePaymentId: intentId,
+      couponCode:      group.appliedCoupon ? group.appliedCoupon.code : "",
+      couponDiscount:  group.couponDiscount,
     });
     orderIds.push(order._id);
+
+    if (group.appliedCoupon) {
+      group.appliedCoupon.usedCount += 1;
+      await group.appliedCoupon.save();
+    }
   }
 
   // Payment record

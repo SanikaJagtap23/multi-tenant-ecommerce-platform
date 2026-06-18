@@ -4,12 +4,14 @@ const Product = require("../models/Product");
 const Store   = require("../models/Store");
 const User    = require("../models/User");
 const Payment = require("../models/Payment");
+const Coupon  = require("../models/Coupon");
+const { calcDiscount } = require("./couponController");
 
 // ─── CUSTOMER ────────────────────────────────────────────────────────────────
 
 // POST /api/orders  (COD only — online payments go through /api/payments/intent)
 const createOrder = asyncHandler(async (req, res) => {
-  const { items, storeId, shippingAddress, paymentMethod, notes } = req.body;
+  const { items, storeId, shippingAddress, paymentMethod, notes, couponCode } = req.body;
 
   if (paymentMethod !== "cod") {
     res.status(400);
@@ -54,9 +56,28 @@ const createOrder = asyncHandler(async (req, res) => {
     await product.save();
   }
 
-  const tax         = parseFloat((subtotal * 0.1).toFixed(2));
+  const tax          = parseFloat((subtotal * 0.1).toFixed(2));
   const shippingCost = subtotal >= 500 ? 0 : 49;
-  const totalAmount  = parseFloat((subtotal + tax + shippingCost).toFixed(2));
+
+  // Apply coupon if provided
+  let couponDiscount = 0;
+  let appliedCoupon  = null;
+  if (couponCode) {
+    const now    = new Date();
+    const coupon = await Coupon.findOne({ code: couponCode.toUpperCase().trim(), isActive: true });
+    if (
+      coupon &&
+      coupon.store.toString() === store._id.toString() &&
+      coupon.expiryDate > now &&
+      (coupon.usageLimit === null || coupon.usedCount < coupon.usageLimit) &&
+      subtotal >= coupon.minOrderAmount
+    ) {
+      couponDiscount = parseFloat(calcDiscount(coupon, subtotal).toFixed(2));
+      appliedCoupon  = coupon;
+    }
+  }
+
+  const totalAmount = parseFloat((subtotal + tax + shippingCost - couponDiscount).toFixed(2));
 
   const order = await Order.create({
     customer: req.user._id,
@@ -71,8 +92,15 @@ const createOrder = asyncHandler(async (req, res) => {
     paymentMethod: "cod",
     paymentStatus: "unpaid",
     status: "pending",
-    notes: notes || "",
+    notes:          notes || "",
+    couponCode:     appliedCoupon ? appliedCoupon.code : "",
+    couponDiscount,
   });
+
+  if (appliedCoupon) {
+    appliedCoupon.usedCount += 1;
+    await appliedCoupon.save();
+  }
 
   // Track COD payment record
   await Payment.create({

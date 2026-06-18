@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../features/auth/authSlice";
 import {
   FiGrid, FiPackage, FiPlusCircle, FiShoppingBag,
-  FiShoppingCart, FiTrendingUp, FiBarChart2, FiLogOut,
+  FiShoppingCart, FiTrendingUp, FiBarChart2, FiLogOut, FiTag,
 } from "react-icons/fi";
 import "./VendorSidebar.css";
 
@@ -14,6 +14,7 @@ const links = [
   { to: "/vendor/products/new", icon: <FiPlusCircle />, label: "Add Product" },
   { to: "/vendor/orders", icon: <FiShoppingCart />, label: "Orders" },
   { to: "/vendor/stock", icon: <FiBarChart2 />, label: "Stock" },
+  { to: "/vendor/coupons", icon: <FiTag />, label: "Coupons" },
   { to: "/vendor/analytics", icon: <FiTrendingUp />, label: "Analytics" },
 ];
 

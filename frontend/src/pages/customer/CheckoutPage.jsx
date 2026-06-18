@@ -10,7 +10,7 @@ import Spinner from "../../components/common/Spinner";
 import toast from "react-hot-toast";
 import {
   FiMapPin, FiCreditCard, FiTruck, FiPackage, FiCheck,
-  FiChevronDown, FiSmartphone, FiDatabase, FiGlobe,
+  FiChevronDown, FiSmartphone, FiDatabase, FiGlobe, FiTag, FiX,
 } from "react-icons/fi";
 import "./CheckoutPage.css";
 
@@ -64,6 +64,12 @@ export default function CheckoutPage() {
   const [step, setStep] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [placing, setPlacing] = useState(false);
+
+  const [couponInput,    setCouponInput]    = useState("");
+  const [appliedCoupon,  setAppliedCoupon]  = useState(null); // { code, discountAmount }
+  const [couponLoading,  setCouponLoading]  = useState(false);
+  const [couponError,    setCouponError]    = useState("");
+
   const [address, setAddress] = useState({
     fullName:   userInfo?.name  || "",
     email:      userInfo?.email || "",
@@ -88,6 +94,33 @@ export default function CheckoutPage() {
 
   const handleAddressChange = (e) =>
     setAddress((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
+  const handleApplyCoupon = async () => {
+    if (!couponInput.trim()) return;
+    const storeId = storeGroups[0]?.storeId;
+    if (!storeId) return toast.error("No store in cart.");
+
+    setCouponLoading(true);
+    setCouponError("");
+    try {
+      const res = await axiosInstance.get("/coupons/validate", {
+        params: { code: couponInput.trim(), storeId, subtotal },
+      });
+      setAppliedCoupon(res.data.data);
+      toast.success(`Coupon applied: −₹${res.data.data.discountAmount}`);
+    } catch (err) {
+      setCouponError(err.response?.data?.message || "Invalid coupon.");
+      setAppliedCoupon(null);
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponInput("");
+    setCouponError("");
+  };
 
   const validateAddress = () => {
     const required = ["fullName", "email", "phone", "street", "city", "state", "postalCode"];
@@ -122,6 +155,7 @@ export default function CheckoutPage() {
             shippingAddress: address,
             paymentMethod: "cod",
             notes: "",
+            couponCode: appliedCoupon?.code || "",
           });
         } catch {
           failed.push(group.storeName || group.storeId);
@@ -150,6 +184,7 @@ export default function CheckoutPage() {
           })),
           shippingAddress: address,
           paymentMethod,
+          couponCode: appliedCoupon?.code || "",
         })
       ).unwrap();
 
@@ -404,7 +439,7 @@ export default function CheckoutPage() {
                       ? <><Spinner size="sm" /> {paymentMethod === "cod" ? "Placing..." : "Preparing..."}</>
                       : paymentMethod === "cod"
                         ? `Place ${storeGroups.length > 1 ? `${storeGroups.length} Orders` : "Order"}`
-                        : `Proceed to Pay ₹${total.toLocaleString()}`
+                        : `Proceed to Pay ₹${Math.max(0, total - (appliedCoupon?.discountAmount || 0)).toLocaleString()}`
                     }
                   </button>
                 </div>
@@ -417,6 +452,42 @@ export default function CheckoutPage() {
           <div className="checkout-sidebar">
             <div className="checkout-sidebar__card">
               <h3 className="checkout-sidebar__title">Price Details</h3>
+
+              {/* Coupon Input */}
+              {!appliedCoupon ? (
+                <div className="checkout-coupon">
+                  <div className="checkout-coupon__row">
+                    <FiTag size={14} className="checkout-coupon__icon" />
+                    <input
+                      className="checkout-coupon__input"
+                      type="text"
+                      placeholder="Coupon code"
+                      value={couponInput}
+                      onChange={(e) => { setCouponInput(e.target.value.toUpperCase()); setCouponError(""); }}
+                      onKeyDown={(e) => e.key === "Enter" && handleApplyCoupon()}
+                    />
+                    <button
+                      className="checkout-coupon__apply-btn"
+                      onClick={handleApplyCoupon}
+                      disabled={couponLoading || !couponInput.trim()}
+                    >
+                      {couponLoading ? "…" : "Apply"}
+                    </button>
+                  </div>
+                  {couponError && <p className="checkout-coupon__error">{couponError}</p>}
+                </div>
+              ) : (
+                <div className="checkout-coupon__applied">
+                  <div className="checkout-coupon__applied-left">
+                    <FiTag size={13} />
+                    <span className="checkout-coupon__applied-code">{appliedCoupon.code}</span>
+                    <span className="checkout-coupon__applied-save">−₹{appliedCoupon.discountAmount}</span>
+                  </div>
+                  <button className="checkout-coupon__remove" onClick={handleRemoveCoupon} title="Remove coupon">
+                    <FiX size={14} />
+                  </button>
+                </div>
+              )}
 
               {storeGroups.length > 1 && (
                 <div className="checkout-sidebar__breakdown">
@@ -445,9 +516,15 @@ export default function CheckoutPage() {
                   <span>Delivery{storeGroups.length > 1 ? ` (${storeGroups.length} stores)` : ""}</span>
                   <span>{shipping === 0 ? "FREE" : `₹${shipping}`}</span>
                 </div>
+                {appliedCoupon && (
+                  <div className="checkout-sidebar__row checkout-sidebar__row--discount">
+                    <span>Coupon ({appliedCoupon.code})</span>
+                    <span>−₹{appliedCoupon.discountAmount.toLocaleString()}</span>
+                  </div>
+                )}
                 <div className="checkout-sidebar__total">
                   <span>Grand Total</span>
-                  <span>₹{total.toLocaleString()}</span>
+                  <span>₹{Math.max(0, total - (appliedCoupon?.discountAmount || 0)).toLocaleString()}</span>
                 </div>
               </div>
 

@@ -7,6 +7,7 @@ import orderReducer   from "../features/order/orderSlice";
 import wishlistReducer from "../features/wishlist/wishlistSlice";
 import paymentReducer from "../features/payment/paymentSlice";
 import adminReducer   from "../features/admin/adminSlice";
+import couponReducer  from "../features/coupon/couponSlice";
 
 const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ const store = configureStore({
     wishlist: wishlistReducer,
     payment:  paymentReducer,
     admin:    adminReducer,
+    coupon:   couponReducer,
   },
 });
 

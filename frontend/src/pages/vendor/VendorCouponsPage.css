@@ -1,0 +1,337 @@
+.vcoupons {
+  padding: 1.5rem 2rem;
+  max-width: 1000px;
+}
+
+/* Header */
+.vcoupons__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.vcoupons__title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--clr-text-100, #111);
+  margin: 0;
+}
+
+.vcoupons__subtitle {
+  font-size: 0.82rem;
+  color: var(--clr-text-400, #888);
+  margin: 0.15rem 0 0;
+}
+
+.vcoupons__add-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  background: var(--clr-primary, #6c63ff);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+.vcoupons__add-btn:hover { opacity: 0.88; }
+
+.vcoupons__error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  background: #fef2f2;
+  color: #dc2626;
+  border-radius: 8px;
+  font-size: 0.83rem;
+  margin-bottom: 1.2rem;
+}
+
+/* Empty state */
+.vcoupons__spinner,
+.vcoupons__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 3rem 1rem;
+  color: var(--clr-text-400, #aaa);
+}
+.vcoupons__empty p {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--clr-text-300, #999);
+  margin: 0;
+}
+.vcoupons__empty span {
+  font-size: 0.82rem;
+  color: var(--clr-text-400, #bbb);
+  text-align: center;
+}
+
+/* Grid */
+.vcoupons__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+/* Card */
+.vcoupons__card {
+  background: var(--clr-surface, #fff);
+  border: 1px solid var(--clr-border, #e5e7eb);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  transition: box-shadow 0.15s;
+}
+.vcoupons__card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+.vcoupons__card--dim { opacity: 0.65; }
+
+.vcoupons__card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+
+.vcoupons__card-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.vcoupons__code {
+  font-family: monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--clr-text-100, #111);
+  background: var(--clr-bg, #f3f4f6);
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+}
+
+.vcoupons__tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.18rem 0.5rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.vcoupons__tag--active   { background: #dcfce7; color: #16a34a; }
+.vcoupons__tag--inactive { background: #f3f4f6; color: #6b7280; }
+.vcoupons__tag--expired  { background: #fee2e2; color: #dc2626; }
+.vcoupons__tag--exhausted{ background: #fef3c7; color: #d97706; }
+
+.vcoupons__card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.vcoupons__toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  transition: background 0.15s;
+}
+.vcoupons__toggle:hover { background: var(--clr-bg, #f3f4f6); }
+.vcoupons__toggle--on  { color: #16a34a; }
+.vcoupons__toggle--off { color: #9ca3af; }
+
+.vcoupons__delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 6px;
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  transition: background 0.15s;
+}
+.vcoupons__delete:hover { background: #fee2e2; }
+
+.vcoupons__discount {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--clr-primary, #6c63ff);
+  margin-bottom: 0.75rem;
+}
+
+.vcoupons__meta { display: flex; flex-direction: column; gap: 0.3rem; }
+.vcoupons__meta-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--clr-text-300, #555);
+}
+.vcoupons__meta-label { color: var(--clr-text-400, #999); }
+.vcoupons__expired-text { color: #dc2626; font-weight: 600; }
+
+/* Modal */
+.vcoupons__modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9000;
+  padding: 1rem;
+}
+
+.vcoupons__modal {
+  background: var(--clr-surface, #fff);
+  border-radius: 14px;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.vcoupons__modal--sm { max-width: 380px; }
+
+.vcoupons__modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.vcoupons__modal-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--clr-text-100, #111);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.vcoupons__modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--clr-text-400, #888);
+  padding: 0.2rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  transition: background 0.15s;
+}
+.vcoupons__modal-close:hover { background: var(--clr-bg, #f3f4f6); color: #111; }
+
+.vcoupons__modal-body {
+  font-size: 0.87rem;
+  color: var(--clr-text-300, #555);
+  margin: 0.4rem 0 1rem;
+}
+
+/* Form */
+.vcoupons__form { display: flex; flex-direction: column; gap: 0.9rem; }
+
+.vcoupons__form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.vcoupons__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.vcoupons__field label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--clr-text-300, #555);
+}
+.vcoupons__field label span { color: #ef4444; }
+
+.vcoupons__field input,
+.vcoupons__field select {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--clr-border, #d1d5db);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  background: var(--clr-surface, #fff);
+  color: var(--clr-text-100, #111);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.vcoupons__field input:focus,
+.vcoupons__field select:focus {
+  border-color: var(--clr-primary, #6c63ff);
+}
+
+.vcoupons__modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.vcoupons__cancel-btn {
+  padding: 0.5rem 1rem;
+  background: var(--clr-bg, #f3f4f6);
+  color: var(--clr-text-200, #374151);
+  border: 1px solid var(--clr-border, #d1d5db);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.vcoupons__cancel-btn:hover { background: var(--clr-border, #e5e7eb); }
+
+.vcoupons__submit-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1.1rem;
+  background: var(--clr-primary, #6c63ff);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.vcoupons__submit-btn:disabled { opacity: 0.65; cursor: not-allowed; }
+.vcoupons__submit-btn:hover:not(:disabled) { opacity: 0.88; }
+
+.vcoupons__delete-confirm-btn {
+  padding: 0.5rem 1rem;
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.vcoupons__delete-confirm-btn:hover { opacity: 0.88; }
+
+@media (max-width: 640px) {
+  .vcoupons { padding: 1rem; }
+  .vcoupons__form-row { grid-template-columns: 1fr; }
+  .vcoupons__grid { grid-template-columns: 1fr; }
+}

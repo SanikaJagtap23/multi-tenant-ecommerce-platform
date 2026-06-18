@@ -45,6 +45,8 @@ const orderSchema = new mongoose.Schema(
     },
     stripePaymentId: { type: String, default: "" },
     notes: { type: String, default: "" },
+    couponCode:     { type: String, default: "" },
+    couponDiscount: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

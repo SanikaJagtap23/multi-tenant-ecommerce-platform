@@ -36,6 +36,7 @@ import VendorOrdersPage from "./pages/vendor/VendorOrdersPage";
 import VendorOrderDetailPage from "./pages/vendor/VendorOrderDetailPage";
 import VendorAnalyticsPage from "./pages/vendor/VendorAnalyticsPage";
 import StockManagementPage from "./pages/vendor/StockManagementPage";
+import VendorCouponsPage from "./pages/vendor/VendorCouponsPage";
 
 // Admin pages
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
@@ -145,6 +146,7 @@ export default function App() {
               <Route path="/vendor/orders/:id"         element={<VendorOrderDetailPage />} />
               <Route path="/vendor/analytics"          element={<VendorAnalyticsPage />} />
               <Route path="/vendor/stock"              element={<StockManagementPage />} />
+              <Route path="/vendor/coupons"            element={<VendorCouponsPage />} />
             </Route>
           </Route>
 
