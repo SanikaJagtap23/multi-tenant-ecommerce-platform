@@ -580,6 +580,117 @@
   margin-right: 0.5rem;
 }
 
+/* ── COUPON ── */
+.checkout-coupon {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px dashed var(--clr-border-light, #e5e7eb);
+}
+
+.checkout-coupon__row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.checkout-coupon__icon {
+  color: var(--clr-text-400, #9ca3af);
+  flex-shrink: 0;
+}
+
+.checkout-coupon__input {
+  flex: 1;
+  padding: 0.38rem 0.6rem;
+  border: 1px solid var(--clr-border, #d1d5db);
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-family: monospace;
+  letter-spacing: 0.05em;
+  outline: none;
+  background: var(--clr-surface, #fff);
+  color: var(--clr-text-100, #111);
+  text-transform: uppercase;
+}
+.checkout-coupon__input:focus { border-color: var(--clr-primary, #6c63ff); }
+
+.checkout-coupon__apply-btn {
+  padding: 0.38rem 0.65rem;
+  background: var(--clr-primary, #6c63ff);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+.checkout-coupon__apply-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.checkout-coupon__apply-btn:hover:not(:disabled) { opacity: 0.88; }
+
+.checkout-coupon__error {
+  font-size: 0.73rem;
+  color: #dc2626;
+  margin: 0.3rem 0 0;
+}
+
+.checkout-coupon__applied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 0.6rem;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+}
+
+.checkout-coupon__applied-left {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #16a34a;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.checkout-coupon__applied-code {
+  font-family: monospace;
+  letter-spacing: 0.05em;
+}
+
+.checkout-coupon__applied-save {
+  font-size: 0.72rem;
+  background: #dcfce7;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  color: #15803d;
+}
+
+.checkout-coupon__remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #16a34a;
+  display: flex;
+  align-items: center;
+  padding: 0.1rem;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.checkout-coupon__remove:hover { background: #bbf7d0; }
+
+.checkout-sidebar__row--discount {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.checkout-store-footer__coupon {
+  font-size: 0.72rem;
+  color: #16a34a;
+  margin-left: 0.25rem;
+}
+
 .checkout-sidebar__rows {
   display: flex;
   flex-direction: column;

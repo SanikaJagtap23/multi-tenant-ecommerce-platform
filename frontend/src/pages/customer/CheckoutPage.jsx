@@ -422,8 +422,15 @@ export default function CheckoutPage() {
                           ))}
                         </ul>
                         <div className="checkout-store-footer">
-                          <span>Subtotal + tax + delivery</span>
-                          <span className="checkout-store-footer__total">₹{t.total.toLocaleString()}</span>
+                          <span>
+                            Subtotal + tax + delivery
+                            {appliedCoupon && group.storeId === storeGroups[0]?.storeId && (
+                              <span className="checkout-store-footer__coupon"> − coupon</span>
+                            )}
+                          </span>
+                          <span className="checkout-store-footer__total">
+                            ₹{Math.max(0, t.total - (appliedCoupon && group.storeId === storeGroups[0]?.storeId ? appliedCoupon.discountAmount : 0)).toLocaleString()}
+                          </span>
                         </div>
                       </div>
                     );
