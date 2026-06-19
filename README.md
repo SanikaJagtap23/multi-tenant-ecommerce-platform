@@ -211,4 +211,4 @@ cd frontend && npm test
 
 ## Developed By
 
-Prajval — Internship Project, Zaalima Development Pvt. Ltd., 2026
+Sanika — Internship Project, Zaalima Development Pvt. Ltd., 2026
